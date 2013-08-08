@@ -5,8 +5,8 @@ import org.landa.wiidget.antlr.WiidgetParser.CompilationUnitContext;
 import com.google.inject.ImplementedBy;
 
 
-@ImplementedBy(WiigetParserImpl.class)
-public interface WiigetParser {
+@ImplementedBy(WiidgetLangProcessorImpl.class)
+public interface WiidgetLangProcessor {
 
 	public String render(CompilationUnitContext compilationUnitContext) throws WiidgetParserException;
 

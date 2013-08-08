@@ -1,0 +1,17 @@
+
+import org.landa.wiidget.library.template.*;
+import org.landa.wiidget.library.html.*;
+
+Template(value = "/views/layout/main.html", removePlaceholders = false){
+
+	Part("body"){
+		
+		Form(action = "/rest"){
+		
+			CData("{form}");
+		
+		}
+		
+	}
+	
+}

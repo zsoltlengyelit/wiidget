@@ -40,7 +40,7 @@ import org.mvel2.MVEL;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
-public class WiigetParserImpl extends WiidgetView implements WiigetParser {
+public class WiidgetLangProcessorImpl extends WiidgetView implements WiidgetLangProcessor {
 
 	Map<String, Class<? extends Wiidget>> importClassMap;
 
@@ -51,7 +51,7 @@ public class WiigetParserImpl extends WiidgetView implements WiigetParser {
 	private final WiidgetContext wiidgetContext;
 
 	@Inject
-	public WiigetParserImpl(final Injector injector, final WiidgetFactory wiidgetFactory, final WiidgetContext wiidgetContext) {
+	public WiidgetLangProcessorImpl(final Injector injector, final WiidgetFactory wiidgetFactory, final WiidgetContext wiidgetContext) {
 		super();
 
 		this.importClassMap = new HashMap<String, Class<? extends Wiidget>>();

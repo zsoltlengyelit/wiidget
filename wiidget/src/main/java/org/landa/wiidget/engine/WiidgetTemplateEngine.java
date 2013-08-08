@@ -24,7 +24,7 @@ import org.landa.wiidget.antlr.WiidgetParser;
 import org.landa.wiidget.antlr.WiidgetParser.CompilationUnitContext;
 import org.landa.wiidget.context.WiidgetContext;
 import org.landa.wiidget.io.FormatterTransformer;
-import org.landa.wiidget.parser.WiigetParser;
+import org.landa.wiidget.parser.WiidgetLangProcessor;
 import org.landa.wiidget.util.DataMap;
 import org.landa.wiidget.util.WiidgetProperties;
 
@@ -34,8 +34,6 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 public class WiidgetTemplateEngine implements TemplateEngine {
-
-	private final String FILE_SUFFIX = ".macro.html";
 
 	private final Messages messages;
 
@@ -189,11 +187,11 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 
 			final java.io.InputStream inputStream = getClass().getResourceAsStream(view);
 
-			final WiigetParser wiigetParser = injector.getInstance(WiigetParser.class);
+			final WiidgetLangProcessor processor = injector.getInstance(WiidgetLangProcessor.class);
 
 			final CompilationUnitContext compilationUnit = getCompilationUnitContext(inputStream);
 
-			final String viewResult = wiigetParser.render(compilationUnit);
+			final String viewResult = processor.render(compilationUnit);
 
 			final String transformedResult = getResultTransformerRegistrator().transform(viewResult);
 
@@ -234,7 +232,7 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 		return injector.getInstance(ResultTransformerRegistrator.class);
 	}
 
-	private CompilationUnitContext getCompilationUnitContext(final InputStream inputStream) throws IOException {
+	public static CompilationUnitContext getCompilationUnitContext(final InputStream inputStream) throws IOException {
 
 		final ANTLRInputStream input = new ANTLRInputStream(inputStream);
 
@@ -258,7 +256,7 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 
 	@Override
 	public String getSuffixOfTemplatingEngine() {
-		return FILE_SUFFIX;
+		return properties.getString(WiidgetProperties.WIIDGET_FILE_EXTENSION);
 	}
 
 }

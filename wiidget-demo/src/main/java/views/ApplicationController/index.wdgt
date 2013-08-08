@@ -2,21 +2,18 @@
 import org.landa.wiidget.library.template.*;
 import org.landa.wiidget.library.html.*;
 
-Template(value = "/views/layout/main.html", removePlaceholders = true){
+Template(value = "/views/layout/main.wdgt", removePlaceholders = true){
 	
-	SimplePart(name = "title", value = "Oldalam");
+	SimplePart(name = "title", value = "Oldalam 34");
 	
-	Part("body"){
+	Part("form"){
 		
 		CssFile("assets/css/bootstrap.css");
+	
+		Label("hello");
 		
-		Form{
-			
-			Label("hello");
-			
-			InputText(name="name", value="hello", type="color");
-			
-		}
+		InputText(name="name", value="hello", type="color");
+
 		
 	}
 	
