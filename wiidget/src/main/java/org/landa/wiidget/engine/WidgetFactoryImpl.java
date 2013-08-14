@@ -1,5 +1,6 @@
 package org.landa.wiidget.engine;
 
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Stack;
 
@@ -8,6 +9,9 @@ import ninja.Context;
 import org.landa.wiidget.Wiidget;
 import org.landa.wiidget.WiidgetView;
 import org.landa.wiidget.util.DataMap;
+import org.landa.wiidget.validation.ValidationError;
+import org.landa.wiidget.validation.ValidationException;
+import org.landa.wiidget.validation.WiidgetValidator;
 import org.mvel2.MVEL;
 
 import com.google.inject.Inject;
@@ -34,10 +38,16 @@ public class WidgetFactoryImpl implements WiidgetFactory {
 	 */
 	private int idCounter = 1;
 
+	/**
+	 * 
+	 */
+	private final WiidgetValidator wiidgetValidator;
+
 	@Inject
-	public WidgetFactoryImpl(final Context context, final Injector injector) {
+	public WidgetFactoryImpl(final Context context, final WiidgetValidator wiidgetValidator, final Injector injector) {
 
 		this.injector = injector;
+		this.wiidgetValidator = wiidgetValidator;
 	}
 
 	@Override
@@ -71,7 +81,6 @@ public class WidgetFactoryImpl implements WiidgetFactory {
 	}
 
 	/**
-	 * 
 	 * @param componentClass
 	 * @param data
 	 * @return
@@ -89,7 +98,18 @@ public class WidgetFactoryImpl implements WiidgetFactory {
 
 		}
 
+		validate(component);
+
 		return component;
+	}
+
+	private void validate(final Wiidget wiidget) {
+		final List<ValidationError> errors = wiidgetValidator.validate(wiidget);
+
+		if (!errors.isEmpty()) {
+
+			throw new ValidationException(errors);
+		}
 	}
 
 	@Override
