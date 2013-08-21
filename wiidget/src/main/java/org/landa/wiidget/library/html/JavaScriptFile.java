@@ -3,10 +3,12 @@ package org.landa.wiidget.library.html;
 import org.landa.wiidget.annotation.DefaultField;
 import org.landa.wiidget.library.html.transformer.AbstractResultTransformerWiidget;
 
-public class CssFile extends AbstractResultTransformerWiidget {
+public class JavaScriptFile extends AbstractResultTransformerWiidget {
 
 	@DefaultField
 	private String url;
+
+	private final String type = "text/javascript";
 
 	public String getUrl() {
 		return url;
@@ -16,10 +18,14 @@ public class CssFile extends AbstractResultTransformerWiidget {
 		this.url = url;
 	}
 
+	public String getType() {
+		return type;
+	}
+
 	@Override
 	public String transform(final String result) {
 
-		String replacement = "<link rel=\"stylesheet\" href=\"" + url + "\" media=\"all\">";
+		String replacement = "<script type=\"" + getType() + "\" src=\"" + getUrl() + "\" ></script>";
 		replacement += "\n</head>";
 
 		final String transformed = result.replaceFirst("</head>", replacement);

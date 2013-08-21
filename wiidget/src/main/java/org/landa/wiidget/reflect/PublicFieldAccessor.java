@@ -1,8 +1,7 @@
-package org.landa.wiidget.parser;
+package org.landa.wiidget.reflect;
 
 import java.lang.reflect.Field;
 
-import org.landa.wiidget.reflect.FieldAccessor;
 
 public class PublicFieldAccessor implements FieldAccessor {
 

@@ -1,9 +1,8 @@
-package org.landa.wiidget.parser;
+package org.landa.wiidget.reflect;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.landa.wiidget.reflect.FieldAccessor;
 
 public class GetterFieldAccessor implements FieldAccessor {
 

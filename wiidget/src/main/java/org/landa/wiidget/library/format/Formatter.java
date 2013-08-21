@@ -1,7 +1,7 @@
 package org.landa.wiidget.library.format;
 
-public interface Formatter {
+public interface Formatter<T> {
 
-	public String format(Object object);
+	public String format(T object);
 
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.landa.wiidget.Wiidget;
+import org.landa.wiidget.WiidgetException;
 import org.landa.wiidget.WiidgetView;
 import org.landa.wiidget.annotation.DefaultField;
 import org.landa.wiidget.antlr.WiidgetParser.BooleanExpressionContext;
@@ -19,11 +20,18 @@ import org.landa.wiidget.antlr.WiidgetParser.ElementValueContext;
 import org.landa.wiidget.antlr.WiidgetParser.ElementValuePairContext;
 import org.landa.wiidget.antlr.WiidgetParser.ElementValuePairsContext;
 import org.landa.wiidget.antlr.WiidgetParser.ExpressionContext;
+import org.landa.wiidget.antlr.WiidgetParser.ExpressionListContext;
 import org.landa.wiidget.antlr.WiidgetParser.ForeachControlContext;
 import org.landa.wiidget.antlr.WiidgetParser.IfControlContext;
 import org.landa.wiidget.antlr.WiidgetParser.ImportDeclarationContext;
+import org.landa.wiidget.antlr.WiidgetParser.IndexExpressionContext;
+import org.landa.wiidget.antlr.WiidgetParser.IndexingExpressionContext;
 import org.landa.wiidget.antlr.WiidgetParser.JokerImportContext;
 import org.landa.wiidget.antlr.WiidgetParser.LiteralContext;
+import org.landa.wiidget.antlr.WiidgetParser.MathematicalExpressionContext;
+import org.landa.wiidget.antlr.WiidgetParser.MathematicalOperandExpressionContext;
+import org.landa.wiidget.antlr.WiidgetParser.MethodCallExpressionContext;
+import org.landa.wiidget.antlr.WiidgetParser.ParExpressionContext;
 import org.landa.wiidget.antlr.WiidgetParser.QualifiedNameContext;
 import org.landa.wiidget.antlr.WiidgetParser.StatementDeclarationContext;
 import org.landa.wiidget.antlr.WiidgetParser.WidgetArgumentsContext;
@@ -34,6 +42,7 @@ import org.landa.wiidget.engine.WiidgetFactory;
 import org.landa.wiidget.parser.control.ForeachControl;
 import org.landa.wiidget.parser.control.IfControl;
 import org.landa.wiidget.reflect.Reflection;
+import org.landa.wiidget.reflect.ReflectionException;
 import org.landa.wiidget.util.DataMap;
 import org.mvel2.MVEL;
 
@@ -140,6 +149,10 @@ public class WiidgetLangProcessorImpl extends WiidgetView implements WiidgetLang
 			oldVariableValue = wiidgetContext.get(variable);
 		}
 
+		if (null == iterable) {
+			throw new WiidgetException("Itarable value in 'foreach' statement is null.");
+		}
+
 		for (final Object item : iterable) {
 
 			wiidgetContext.set(variable, item);
@@ -210,7 +223,7 @@ public class WiidgetLangProcessorImpl extends WiidgetView implements WiidgetLang
 
 	private Boolean evaluate(final BooleanExpressionContext booleanExpression) {
 
-		final String expression = booleanExpression.getText();
+		final String expression = booleanExpression.getText();// TODO
 
 		final Map<String, Object> variables = wiidgetContext.getAll();
 		final Boolean value = MVEL.evalToBoolean(expression, variables);
@@ -393,8 +406,232 @@ public class WiidgetLangProcessorImpl extends WiidgetView implements WiidgetLang
 
 	}
 
-	private Object processExpression(final ExpressionContext expression) {
-		return expression.getText(); // TODO
+	private Object processExpression(final ExpressionContext expression) throws WiidgetParserException {
+
+		// TODO
+		final QualifiedNameContext qualifiedName = expression.qualifiedName();
+		if (null != qualifiedName) {
+			return evaluateQualifiedName(qualifiedName);
+		}
+
+		final ParExpressionContext parExpressionContext = expression.parExpression();
+		if (null != parExpressionContext) {
+			return processExpression(parExpressionContext.expression());
+		}
+
+		final IndexingExpressionContext indexingExpressionContext = expression.indexingExpression();
+		if (null != indexingExpressionContext) {
+			return evaluateIndexingExpression(indexingExpressionContext);
+		}
+
+		final MethodCallExpressionContext methodCallExpressionContext = expression.methodCallExpression();
+		if (null != methodCallExpressionContext) {
+			return evaluateMethodCallExpression(methodCallExpressionContext);
+		}
+
+		final MathematicalExpressionContext mathematicalExpressionContext = expression.mathematicalExpression();
+		if (null != mathematicalExpressionContext) {
+			return evaluateMathematicalExpression(mathematicalExpressionContext);
+		}
+
+		final LiteralContext literalContext = expression.literal();
+		if (null != literalContext) {
+			return processLiteral(literalContext);
+		}
+
+		final TerminalNode question = expression.QUESTION();
+		final TerminalNode colon = expression.COLON();
+
+		// threeway operator
+		if (null != question && null != colon) {
+			final ExpressionContext conditionExpression = expression.expression(0);
+
+			final Boolean condition = (Boolean) processExpression(conditionExpression);
+
+			final ExpressionContext value = expression.expression(condition ? 1 : 2);
+
+			return processExpression(value);
+		}
+
+		// default operator
+		final TerminalNode defaultOperator = expression.DEFAULT_OPERATOR();
+		if (defaultOperator != null) {
+			final Object value = processExpression(expression.expression(0));
+
+			if (null == value) { // if null, evaluate the second
+				return processExpression(expression.expression(1));
+			}
+		}
+
+		throw new WiidgetParserException("Cannot evaluate expression: '" + expression.getText() + "'");
+	}
+
+	private Number evaluateMathematicalExpression(final MathematicalExpressionContext mathematicalExpressionContext) throws WiidgetParserException {
+
+		final MathematicalOperandExpressionContext firstOperandExpression = mathematicalExpressionContext.mathematicalOperandExpression(0);
+		final MathematicalOperandExpressionContext secondOperandExpression = mathematicalExpressionContext.mathematicalOperandExpression(1);
+
+		final Number firstOperand = evaluateMathematicalOperand(firstOperandExpression);
+		final Number secondOperand = evaluateMathematicalOperand(secondOperandExpression);
+		final String oparator = mathematicalExpressionContext.mathematicalOperator().getText();
+
+		final boolean isFirstDouble = firstOperand instanceof Double;
+		final boolean isSecondDouble = secondOperand instanceof Double;
+
+		Number result = 0;
+
+		switch (oparator) {
+			case "+":
+				result = (isFirstDouble ? firstOperand.doubleValue() : firstOperand.intValue()) + (isSecondDouble ? secondOperand.doubleValue() : secondOperand.intValue());
+				break;
+			case "-":
+				result = (isFirstDouble ? firstOperand.doubleValue() : firstOperand.intValue()) - (isSecondDouble ? secondOperand.doubleValue() : secondOperand.intValue());
+				break;
+			case "*":
+				result = (isFirstDouble ? firstOperand.doubleValue() : firstOperand.intValue()) * (isSecondDouble ? secondOperand.doubleValue() : secondOperand.intValue());
+				break;
+			case "/":
+				result = (isFirstDouble ? firstOperand.doubleValue() : firstOperand.intValue()) / (isSecondDouble ? secondOperand.doubleValue() : secondOperand.intValue());
+				break;
+			case "%":
+				result = (isFirstDouble ? firstOperand.doubleValue() : firstOperand.intValue()) % (isSecondDouble ? secondOperand.doubleValue() : secondOperand.intValue());
+				break;
+			default:
+				throw new WiidgetParserException("Cannot evaluate expression: " + mathematicalExpressionContext.getText());
+		}
+
+		return (isFirstDouble || isSecondDouble) ? Double.valueOf(result.doubleValue()) : Integer.valueOf(result.intValue());
+
+	}
+
+	private Number evaluateMathematicalOperand(final MathematicalOperandExpressionContext operandExpression) throws WiidgetParserException {
+
+		final TerminalNode integer = operandExpression.IntegerLiteral();
+		if (integer != null) {
+			return Integer.valueOf(integer.getText());
+		}
+
+		final TerminalNode floating = operandExpression.FloatingPointLiteral();
+		if (null != floating) {
+			return Double.valueOf(floating.getText());
+		}
+
+		final MethodCallExpressionContext methodCallExpressionContext = operandExpression.methodCallExpression();
+		if (null != methodCallExpressionContext) {
+			try {
+				return (Number) evaluateMethodCallExpression(methodCallExpressionContext);
+			} catch (final ClassCastException castException) {
+				throw new WiidgetParserException("Cannot cast to number expression: " + methodCallExpressionContext.getText(), castException);
+			}
+		}
+
+		final IndexingExpressionContext indexingExpressionContext = operandExpression.indexingExpression();
+		if (null != indexingExpressionContext) {
+			try {
+				return (Number) evaluateIndexingExpression(indexingExpressionContext);
+			} catch (final ClassCastException castException) {
+				throw new WiidgetParserException("Cannot cast to number expression: " + indexingExpressionContext.getText(), castException);
+			}
+		}
+
+		throw new WiidgetParserException("Cannot create number from: " + operandExpression.getText());
+
+	}
+
+	@SuppressWarnings("rawtypes")
+	private Object evaluateIndexingExpression(final IndexingExpressionContext indexingExpressionContext) throws WiidgetParserException {
+
+		final Object base = evaluateQualifiedName(indexingExpressionContext.qualifiedName());
+
+		if (null == base) { // TODO szabály?
+			throw new NullPointerException("Cannot indexing null.");
+		}
+
+		final Object index = evaluateIndexExpression(indexingExpressionContext.indexExpression());
+
+		// map
+		if (base instanceof Map) {
+			return ((Map) base).get(index);
+		}
+
+		// list
+		if (base instanceof List) {
+			final int listIndex = Integer.parseInt(index.toString());
+			return ((List) base).get(listIndex);
+		}
+
+		// object indexing
+		return MVEL.getProperty(index.toString(), base);
+	}
+
+	private Object evaluateIndexExpression(final IndexExpressionContext indexExpression) throws WiidgetParserException {
+
+		final LiteralContext literalContext = indexExpression.literal();
+		if (null != literalContext) {
+			return processLiteral(literalContext);
+		}
+
+		final MethodCallExpressionContext methodCallExpressionContext = indexExpression.methodCallExpression();
+		return evaluateMethodCallExpression(methodCallExpressionContext);
+
+	}
+
+	private Object evaluateMethodCallExpression(final MethodCallExpressionContext methodCallExpressionContext) throws WiidgetParserException {
+		final Object base = evaluateQualifiedName(methodCallExpressionContext.qualifiedName());
+
+		if (null == base) { // TODO szabály?
+			throw new NullPointerException("Cannot indexing null.");
+		}
+
+		final String methodName = methodCallExpressionContext.Identifier().getText();
+		final Object[] parameters;
+
+		final ExpressionListContext expressionListContext = methodCallExpressionContext.expressionList();
+		if (null != expressionListContext) {
+			parameters = evaluateExpressionList(expressionListContext);
+		} else {
+			parameters = new Object[0];
+		}
+
+		try {
+			return Reflection.callMethod(base, methodName, parameters);
+		} catch (final ReflectionException reflectionException) {
+			throw new WiidgetParserException("Cannot invoke method", reflectionException);
+		}
+	}
+
+	private Object[] evaluateExpressionList(final ExpressionListContext expressionListContext) throws WiidgetParserException {
+		final List<ExpressionContext> expressionContexts = expressionListContext.expression();
+
+		final Object[] objects = new Object[expressionContexts.size()];
+
+		for (int i = 0; i < expressionContexts.size(); i++) {
+
+			final ExpressionContext expression = expressionContexts.get(i);
+
+			objects[i] = processExpression(expression);
+		}
+
+		return objects;
+	}
+
+	private Object evaluateQualifiedName(final QualifiedNameContext qualifiedName) {
+		final String fullname = qualifiedName.getText(); // TODO ezt Identifier segítségével megcsinálni
+
+		String[] names;
+		if (fullname.indexOf(".") > -1) {
+			names = fullname.split("\\.");
+		} else {
+			names = new String[] { fullname };
+		}
+
+		Object base = wiidgetContext.get(names[0]);
+
+		for (int i = 1; i < names.length; i++) {
+			base = MVEL.getProperty(names[i], base);
+		}
+
+		return base;
 	}
 
 	private Object processLiteral(final LiteralContext literalContext) throws WiidgetParserException {
@@ -430,7 +667,7 @@ public class WiidgetLangProcessorImpl extends WiidgetView implements WiidgetLang
 			return null;
 		}
 
-		throw new WiidgetParserException("Cannot parce literal: " + literalContext.getText());
+		throw new WiidgetParserException("Cannot evaluate literal: " + literalContext.getText());
 	}
 
 	/**

@@ -1,9 +1,8 @@
 package org.landa.wiidget.library.html;
 
 import org.landa.wiidget.annotation.Attribute;
-import org.landa.wiidget.library.TagWiidget;
 
-public class InputText extends TagWiidget {
+public class InputText extends BaseTagWiidget {
 
 	@Attribute
 	private String name;
@@ -12,13 +11,7 @@ public class InputText extends TagWiidget {
 	private String value;
 
 	@Attribute
-	private String type;
-
-	public InputText() {
-
-		super("input", true);
-		this.type = "text";
-	}
+	private String type = "text";
 
 	public String getName() {
 		return name;

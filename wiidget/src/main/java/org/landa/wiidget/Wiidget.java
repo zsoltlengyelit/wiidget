@@ -189,6 +189,10 @@ public abstract class Wiidget {
 		try {
 			final InputStream file = getClass().getClassLoader().getResourceAsStream(path);
 
+			if (file == null) {
+				throw new WiidgetException("Cannot found file: " + path);
+			}
+
 			content = readFile(file);
 
 		} catch (final IOException e) {
@@ -223,18 +227,6 @@ public abstract class Wiidget {
 
 	protected Context getContext() {
 		return getOwner().getContext();
-	}
-
-	public DataMap getAttributes() {
-		if (null == attributes) {
-			attributes = new DataMap();
-		}
-
-		return attributes;
-	}
-
-	public void setAttributes(final DataMap attributes) {
-		this.attributes = attributes;
 	}
 
 	public String getId() {

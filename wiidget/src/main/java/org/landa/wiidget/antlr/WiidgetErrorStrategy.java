@@ -5,51 +5,11 @@ import org.antlr.v4.runtime.NoViableAltException;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.TokenFactory;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.misc.Nullable;
 
 public class WiidgetErrorStrategy extends DefaultErrorStrategy {
-
-	@Override
-	public void setTokenFactory(final TokenFactory<?> factory) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Token recoverInline(@NotNull final Parser recognizer) throws RecognitionException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void recover(@NotNull final Parser recognizer, @Nullable final RecognitionException e) {
-		super.recover(recognizer, e);
-		// final TokenStream tokens = recognizer.getInputStream();
-		// String input;
-		// if (tokens instanceof TokenStream) {
-		// if (e.getStartToken().getType() == Token.EOF)
-		// input = "<EOF>";
-		// else
-		// input = tokens.getText(e.getStartToken(), e.getOffendingToken());
-		// } else {
-		// input = "<unknown input>";
-		// }
-		// final String msg = "no viable alternative at input " +
-		// escapeWSAndQuote(input);
-		// recognizer.notifyErrorListeners(e.getOffendingToken(), msg, e);
-		//
-		// throw new WiidgetLexerException("Invalid input.", e);
-
-	}
-
-	@Override
-	public void sync(@NotNull final Parser recognizer) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void beginErrorCondition(@NotNull final Parser recognizer) {
@@ -75,10 +35,11 @@ public class WiidgetErrorStrategy extends DefaultErrorStrategy {
 			final TokenStream tokens = recognizer.getInputStream();
 			String input;
 			if (tokens instanceof TokenStream) {
-				if (noViableAltException.getStartToken().getType() == Token.EOF)
+				if (noViableAltException.getStartToken().getType() == Token.EOF) {
 					input = "<EOF>";
-				else
+				} else {
 					input = tokens.getText(noViableAltException.getStartToken(), noViableAltException.getOffendingToken());
+				}
 			} else {
 				input = "<unknown input>";
 			}

@@ -37,7 +37,7 @@ public class Column extends Wiidget {
 			return value.toString();
 		}
 
-		return formatter.format(object);
+		return formatter.format(value);
 
 	}
 

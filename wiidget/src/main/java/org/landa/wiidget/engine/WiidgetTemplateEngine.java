@@ -18,7 +18,6 @@ import ninja.utils.ResponseStreams;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BufferedTokenStream;
 import org.landa.wiidget.WiidgetException;
-import org.landa.wiidget.antlr.WiidgetBaseListener;
 import org.landa.wiidget.antlr.WiidgetLexer;
 import org.landa.wiidget.antlr.WiidgetParser;
 import org.landa.wiidget.antlr.WiidgetParser.CompilationUnitContext;
@@ -242,7 +241,6 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 
 		final WiidgetParser aWidgetParser = new WiidgetParser(tokenStream);
 
-		aWidgetParser.addParseListener(new WiidgetBaseListener());
 		final CompilationUnitContext compilationUnit = aWidgetParser.compilationUnit();
 
 		return compilationUnit;

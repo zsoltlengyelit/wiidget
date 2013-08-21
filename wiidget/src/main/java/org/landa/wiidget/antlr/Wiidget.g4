@@ -128,14 +128,8 @@ parExpression
 expressionList
     :   expression (',' expression)*
     ;
-
-statementExpression
-    :   expression
-    ;
     
-constantExpression
-    :   expression
-    ;
+
 
 booleanExpression:
         booleanExpressionPart ('<=' | '>=' | '>' | '<') booleanExpressionPart
@@ -145,7 +139,8 @@ booleanExpression:
     |   booleanExpressionPart '|' booleanExpressionPart
     |   booleanExpressionPart '&&' booleanExpressionPart
     |   booleanExpressionPart '||' booleanExpressionPart
-    |   expression
+    |   '!' booleanExpressionPart
+    |   booleanExpressionPart    
     ;
 
 booleanExpressionPart
@@ -154,60 +149,50 @@ booleanExpressionPart
     |   expression
     ;
 
-expression:
-  expression '.' Identifier
-    |   expression '[' expression ']'
-    |   expression '(' expressionList? ')'
-    |   expression ('++' | '--')
-    |   ('+'|'-'|'++'|'--') expression
-    |   ('~'|'!') expression
-    |   expression ('*'|'/'|'%') expression
-    |   expression ('+'|'-') expression
-    |   expression ('<' '<' | '>' '>' '>' | '>' '>') expression
-    |   expression ('<=' | '>=' | '>' | '<') expression
-	|   expression ('==' | '!=') expression
-	|   expression '&' expression
-	|   expression '^' expression
-	|   expression '|' expression
-	|   expression '&&' expression
-	|   expression '||' expression
-	|   expression '?' expression ':' expression
-	|   expression
-        (	'='<assoc=right>
-        |	'+='<assoc=right>
-        |	'-='<assoc=right>
-        |	'*='<assoc=right>
-        |	'/='<assoc=right>
-        |	'&='<assoc=right>
-        |	'|='<assoc=right>
-        |	'^='<assoc=right>
-        |	'>>='<assoc=right>
-        |	'>>>='<assoc=right>
-        |	'<<='<assoc=right>
-        |	'%='<assoc=right>
-        )
-        expression
+indexingExpression
+    :   qualifiedName '[' indexExpression ']'
     ;
 
-
-
-
-
-superSuffix
-    :   arguments
-    |   '.' Identifier arguments?
+indexExpression
+    : literal
+    |   methodCallExpression
+    ;
+          
+methodCallExpression
+    :   qualifiedName '.' Identifier LPAREN expressionList? RPAREN
+    ;
+        
+mathematicalExpression
+    :   mathematicalOperandExpression mathematicalOperator mathematicalOperandExpression
     ;
 
+mathematicalOperator
+    : '*'|'/'|'%'|'+'|'-';
 
-arguments
-    :   '(' expressionList? ')'
+mathematicalOperandExpression
+    : IntegerLiteral
+    | FloatingPointLiteral
+    | methodCallExpression
+    | indexingExpression      
     ;
+
+expression
+    :   qualifiedName        
+    |   parExpression        
+    |   indexingExpression
+    |   methodCallExpression
+    |   mathematicalExpression   
+    |   literal
+    |   expression DEFAULT_OPERATOR expression
+    |   expression QUESTION expression COLON expression        
+    ;
+
 
 // LEXER
 
-// §3.9 Keywords
+// Keywords
 IMPORT : 'import';
-
+DEFAULT_OPERATOR : '~';
 
 // §3.10.1 Integer Literals
 

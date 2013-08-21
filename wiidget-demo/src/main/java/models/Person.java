@@ -16,8 +16,24 @@
 
 package models;
 
-public class Person {	
-	
+public class Person {
+
+	public Person() {
+
+	}
+
+	public Person(final String string, final String string2) {
+		this.name = string;
+		this.phone = string2;
+	}
+
 	public String name;
+
+	public String phone;
+
+	@Override
+	public String toString() {
+		return "Person [name=" + name + ", phone=" + phone + "]";
+	}
 
 }
