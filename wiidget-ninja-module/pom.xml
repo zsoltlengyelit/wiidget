@@ -10,11 +10,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>wiidget-ninja-demo</artifactId>
-	<packaging>war</packaging>
-	<groupId>wiidget-ninja-demo</groupId>
-	<name>ninja demo application</name>
-	<version>1.0-SNAPSHOT</version>
+   <groupId>landa</groupId>
+	<artifactId>wiidget-ninja-module</artifactId>
+	<packaging>war</packaging>		
+	<version>0.0.1-SNAPSHOT</version>
 
 	<build>
 		<plugins>
@@ -27,31 +26,7 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<version>6.1.22</version>
-				<configuration>
-					<contextPath>/</contextPath>
-					<stopKey>stop</stopKey>
-					<stopPort>8889</stopPort>
-					<scanIntervalSeconds>1</scanIntervalSeconds>
-					<reload>automatic</reload>
-					<scanTargetPatterns>
-						<scanTargetPattern>
-							<directory>target/classes</directory>
-							<includes>
-								<include>**/*</include>
-							</includes>
-							<excludes>
-								<exclude>**/*.ftl.html</exclude>
-							</excludes>
-						</scanTargetPattern>
-					</scanTargetPatterns>
-				</configuration>
-			</plugin>
+			</plugin>		
 
 		</plugins>
 
@@ -80,34 +55,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.ninjaframework</groupId>
-			<artifactId>ninja-core-test</artifactId>
-			<version>1.6.0-rc1</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>landa</groupId>
 			<artifactId>wiidget</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>landa</groupId>
-			<artifactId>wiidget-ninja-module</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>landa</groupId>
-			<artifactId>wiidget-library</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
