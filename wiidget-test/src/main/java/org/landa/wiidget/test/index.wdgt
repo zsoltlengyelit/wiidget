@@ -1,0 +1,3 @@
+import org.landa.wiidget.library.html.*;
+
+Label(var);

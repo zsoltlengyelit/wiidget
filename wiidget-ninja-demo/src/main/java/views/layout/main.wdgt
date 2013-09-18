@@ -1,0 +1,46 @@
+
+import org.landa.wiidget.library.template.@;
+import org.landa.wiidget.library.html.@;
+import org.landa.wiidget.library.html.base.@;
+
+Template(value = "/views/layout/main.html", removePlaceholders = false){
+
+	Part("body"){
+		
+		Div(cssClass = "container"){
+			
+			Div(cssClass = "navbar"){
+				Div(cssClass = "navbar-inner"){
+					Ul(cssClass = "nav"){
+						Li();
+						Li();
+					}
+				}
+			}
+		
+			Div(cssClass = "row"){
+				
+				Div(cssClass = "span12 well"){
+					Heading("Üdvözöljük az oldalon!");
+				}
+			}
+			
+			Div(cssClass = "row"){
+				
+				Div(cssClass = "span4"){
+					
+					Heading(content = "Menü", level = 2);
+				}
+				
+				Div(cssClass = "span8"){
+			
+					Placeholder("body");
+			
+				}
+			}
+		
+		}
+		
+	}
+	
+}
