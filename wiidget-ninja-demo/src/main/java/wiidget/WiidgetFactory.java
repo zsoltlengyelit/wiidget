@@ -2,6 +2,7 @@ package wiidget;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import models.Person;
 
@@ -12,10 +13,9 @@ public class WiidgetFactory extends Wiidget {
 
 	public Table table(final List<?> list, final String header) {
 
-		final Table table = this.getWiidgetFactory().createComponent(Table.class);
+		final Set<String> keys = getWiidgetFactory().getWiidgetContext().getKeys();
 
-		table.setValue(list);
-		table.setHeader(header);
+		final Table table = this.getWiidgetFactory().createComponent(Table.class, data().set("value", list).set("header", header));
 
 		table.setCssClass("table table-striped table-hover");
 

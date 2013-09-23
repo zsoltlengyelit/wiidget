@@ -1,0 +1,49 @@
+
+import org.landa.wiidget.library.template.@;
+import org.landa.wiidget.library.html.@;
+import org.landa.wiidget.library.html.datatable.@;
+import org.landa.wiidget.library.html.base.@;
+import wiidget.@;
+import org.landa.wiidget.library.util.@;
+
+
+$loopHelper : LoopHelper;
+
+// link paginator template
+Div(id = id, cssClass = cssClass){
+	
+	Ul(cssClass = listCssClass){
+		
+		// prev page
+		Li(cssClass = currentPage == 1 ? "disabled" : ""){
+			Link(rendered = currentPage != 1, href = ("?" + clientPageVar + "=" + (currentPage - 1))){
+				Out(prevPageLabel);
+			}
+			
+			Link(rendered = (currentPage <= 1), href = "#"){
+				Out(prevPageLabel);
+			}
+		}	
+		
+		// inner pages
+		foreach(page : $loopHelper.loop(1, pageCount, 1)){
+			
+			Li(cssClass = page == currentPage ? "active" : ""){
+				Link(href = ("?" + clientPageVar + "=" + page)){
+					Out(page);
+				}
+			}			
+		}
+		
+		// next page
+		Li(cssClass = currentPage == pageCount ? "disabled" : ""){
+			Link(rendered = currentPage < pageCount, href = ("?" + clientPageVar + "=" + (currentPage + 1))){
+				Out(nextPageLabel);
+			}
+			
+			Link(rendered = (currentPage == pageCount), href = ""){
+				Out(nextPageLabel);
+			}
+		}
+	}	
+}

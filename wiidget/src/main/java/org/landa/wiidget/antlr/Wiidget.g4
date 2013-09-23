@@ -73,7 +73,6 @@ elementValuePair
     
 elementValue
     :   expression
-    |   literal
     |   qualifiedName
     |   elementValueArrayInitializer
     ;
@@ -309,7 +308,7 @@ BinaryDigitOrUnderscore
 	|	'_'
 	;
 
-// §3.10.2 Floating-Point Literals
+// ï¿½3.10.2 Floating-Point Literals
 
 FloatingPointLiteral
 	:	DecimalFloatingPointLiteral

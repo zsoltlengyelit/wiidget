@@ -12,8 +12,11 @@
 
    <groupId>landa</groupId>
 	<artifactId>wiidget-ninja-module</artifactId>
-	<packaging>war</packaging>		
+	<packaging>jar</packaging>		
 	<version>0.0.1-SNAPSHOT</version>
+
+   <name>wiidget-ninja-module</name>
+   <url>http://maven.apache.org</url>
 
 	<build>
 		<plugins>
@@ -44,7 +47,9 @@
 
 	</build>
 
-
+   <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+   </properties>
 
 	<dependencies>
 

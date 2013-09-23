@@ -103,6 +103,10 @@ public class Tag implements Cloneable, Serializable {
 		this.children = children;
 	}
 
+	public Tag(final String name, final DataMap dataMap) {
+		this(name, dataMap.toStringMap(), new LinkedList<Object>());
+	}
+
 	/**
 	 * @return empty html tag
 	 */
@@ -463,6 +467,8 @@ public class Tag implements Cloneable, Serializable {
 	 * @return
 	 */
 	public static String tag(final String tagName, final DataMap attributeMap) {
-		return "<" + tagName + renderAttributes(attributeMap) + " />";
+		// return "<" + tagName + renderAttributes(attributeMap) + " />";
+
+		return new Tag(tagName, attributeMap).toString();
 	}
 }

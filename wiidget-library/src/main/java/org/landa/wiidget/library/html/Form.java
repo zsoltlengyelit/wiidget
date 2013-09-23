@@ -8,7 +8,7 @@ import org.landa.wiidget.annotation.Attribute;
 /**
  * @author Zsolti
  */
-public class Form extends BaseTagWiidget {
+public class Form extends HtmlTagWiidget {
 
 	@Attribute
 	private String method = "GET";

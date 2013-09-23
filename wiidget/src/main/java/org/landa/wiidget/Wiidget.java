@@ -17,7 +17,7 @@ public abstract class Wiidget {
 	/**
 	 * Unique ID of wiidget.
 	 */
-	private String id;
+	protected String id;
 
 	/**
 	 * Rendered property. By default every widget is rendered.
@@ -28,7 +28,22 @@ public abstract class Wiidget {
 
 	private final java.util.List<Wiidget> children = new LinkedList<Wiidget>();
 
+	/**
+	 * This method is invoked, when all the children's run method has invoked.
+	 */
 	public void run() {
+	}
+
+	/**
+	 * This method is called, when the lang processor did not find the field in the class.
+	 * 
+	 * @param name
+	 *            name of the field
+	 * @param value
+	 *            value of the field.
+	 */
+	public void setAttribute(final String name, final Object value) {
+		throw new WiidgetException("Wiidget has no field with name: " + name);
 	}
 
 	protected <W extends Wiidget> W beginWiidget(final W wiidget) {
@@ -110,7 +125,7 @@ public abstract class Wiidget {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <W extends Wiidget> W endWidget(final Class<W> widgetClass) {
+	protected <W extends Wiidget> W endWiidget(final Class<W> widgetClass) {
 		final Wiidget widget = getWiidgetFactory().getWiidgetStack().pop();
 
 		if (!widgetClass.isAssignableFrom(widget.getClass())) {
@@ -146,22 +161,42 @@ public abstract class Wiidget {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <W extends Wiidget> List<W> getChildren(final Class<W> widgetClass) {
+	public <W> List<W> getChildren(final Class<W> wiidgetClass) {
 
 		final List<W> childrenWithType = new LinkedList<W>();
 
 		for (final Wiidget child : getChildren()) {
 
-			if (widgetClass.isAssignableFrom(child.getClass())) {
+			if (wiidgetClass.isAssignableFrom(child.getClass())) {
 
 				childrenWithType.add((W) child);
 			}
 		}
 
 		return childrenWithType;
-
 	}
 
+	/**
+	 * @param wiidgetClass
+	 * @return
+	 */
+	public <W> W getChild(final Class<W> wiidgetClass) {
+
+		final List<W> children = getChildren(wiidgetClass);
+
+		if (children.size() > 1) {
+			throw new WiidgetException("The wiidget has more than one children with type: " + wiidgetClass.getCanonicalName());
+		}
+
+		if (children.isEmpty()) {
+			return null;
+		}
+		return children.get(0);
+	}
+
+	/**
+	 * This method called after all the attributes setted succesfully.
+	 */
 	public void init() {
 	}
 
@@ -173,6 +208,12 @@ public abstract class Wiidget {
 		return getPrintStream().endBuffer();
 	}
 
+	/**
+	 * Returns the content of the specified file.
+	 * 
+	 * @param path
+	 * @return
+	 */
 	protected String getFileContent(final String path) {
 		if (null == path) {
 			throw new WiidgetException("File path cannot be null.");

@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.landa.wiidget.library.Tag;
 import org.landa.wiidget.validator.Required;
 
-public class Table extends BaseTagWiidget {
+public class Table extends HtmlTagWiidget {
 
 	@Required
 	private Collection<?> value;
@@ -22,7 +22,8 @@ public class Table extends BaseTagWiidget {
 
 	@Override
 	public void run() {
-		endBuffer();
+
+		write(endBuffer());
 
 		final List<Column> columns = getChildren(Column.class);
 

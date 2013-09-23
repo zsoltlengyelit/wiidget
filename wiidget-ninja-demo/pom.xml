@@ -27,31 +27,7 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<version>6.1.22</version>
-				<configuration>
-					<contextPath>/</contextPath>
-					<stopKey>stop</stopKey>
-					<stopPort>8889</stopPort>
-					<scanIntervalSeconds>1</scanIntervalSeconds>
-					<reload>automatic</reload>
-					<scanTargetPatterns>
-						<scanTargetPattern>
-							<directory>target/classes</directory>
-							<includes>
-								<include>**/*</include>
-							</includes>
-							<excludes>
-								<exclude>**/*.ftl.html</exclude>
-							</excludes>
-						</scanTargetPattern>
-					</scanTargetPatterns>
-				</configuration>
-			</plugin>
+			</plugin>			
 
 		</plugins>
 
@@ -92,24 +68,19 @@
 			<version>1.6.0-rc1</version>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>landa</groupId>
-			<artifactId>wiidget</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
+		
+		 <dependency>
+         <groupId>landa</groupId>
+         <artifactId>wiidget-library</artifactId>
+         <version>0.0.1-SNAPSHOT</version>         
+      </dependency>
+<!-- 
 		<dependency>
 			<groupId>landa</groupId>
 			<artifactId>wiidget-ninja-module</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
-		<dependency>
-			<groupId>landa</groupId>
-			<artifactId>wiidget-library</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+ -->
 
 	</dependencies>
 

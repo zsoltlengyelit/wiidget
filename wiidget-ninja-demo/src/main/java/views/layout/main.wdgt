@@ -7,35 +7,39 @@ Template(value = "/views/layout/main.html", removePlaceholders = false){
 
 	Part("body"){
 		
+		CssFile("assets/css/bootstrap.css");
+		CssFile("assets/css/style.css");
+		JavaScriptFile("assets/js/bootstrap.min.js");
+	
+		// navbar container
 		Div(cssClass = "container"){
 			
 			Div(cssClass = "navbar"){
 				Div(cssClass = "navbar-inner"){
+					
+					Link(value = "Wiidget demo", href="#", cssClass="brand");
+					
 					Ul(cssClass = "nav"){
-						Li();
-						Li();
+						Li(cssClass = "active"){
+							Link(href="#", value="Home");
+						}
+						Li{
+							Link(href="#", value="Base wiidgets");
+						}
 					}
 				}
-			}
+			}	
+		}
 		
-			Div(cssClass = "row"){
-				
-				Div(cssClass = "span12 well"){
-					Heading("Üdvözöljük az oldalon!");
-				}
-			}
+		Div(cssClass = "container"){
 			
-			Div(cssClass = "row"){
-				
-				Div(cssClass = "span4"){
-					
+			Div(cssClass = "row"){				
+				Div(cssClass = "span4"){					
 					Heading(content = "Menü", level = 2);
 				}
 				
-				Div(cssClass = "span8"){
-			
-					Placeholder("body");
-			
+				Div(cssClass = "span8"){			
+					Placeholder("body");			
 				}
 			}
 		

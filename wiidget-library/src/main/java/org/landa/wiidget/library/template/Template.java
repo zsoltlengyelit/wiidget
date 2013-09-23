@@ -1,68 +1,32 @@
 package org.landa.wiidget.library.template;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.landa.wiidget.Wiidget;
 import org.landa.wiidget.io.StringTemplate;
-import org.landa.wiidget.util.WiidgetProperties;
+import org.landa.wiidget.library.html.TemplatedHtmlWiidget;
+import org.landa.wiidget.util.DataMap;
 
-public class Template extends Wiidget {
+/**
+ * @author Zsolt Lengyel (zsolt.lengyel.it@gmail.com)
+ */
+public class Template extends TemplatedHtmlWiidget {
 
 	/**
 	 * Name of the template. This is a file path.
 	 */
 	private String value;
 
-	private Boolean removePlaceholders = false;
+	private Boolean removePlaceholders = true;
 
 	@Override
-	public void init() {
+	protected String getTemplateName() {
 
-		super.init();
-		startBuffer();
+		return getValue();
 	}
 
 	@Override
-	public void run() {
+	protected String replacePlaceholders(final String content, final DataMap data) {
 
-		endBuffer();
-
-		final Map<String, Object> partMap = getPartMap();
-
-		String fileContent = getFileContent(getValue());
-
-		if (isCompilableTemplate()) {
-			startBuffer();
-			wiidget(WiidgetLangCompiler.class, data().set("value", fileContent));
-
-			fileContent = endBuffer(); // get compile result
-		}
-
-		final StringTemplate stringTemplate = new StringTemplate(fileContent, this.isRemovePlaceholders());
-		final String content = stringTemplate.render(partMap);
-
-		write(content);
-	}
-
-	/**
-	 * @return
-	 */
-	protected Map<String, Object> getPartMap() {
-
-		final List<Part> partList = getChildren(Part.class);
-
-		final Map<String, Object> partMap = new HashMap<String, Object>();
-
-		for (final Part part : partList) {
-
-			final String name = part.getName();
-			final String content = part.getContent();
-
-			partMap.put(name, content);
-		}
-		return partMap;
+		final StringTemplate stringTemplate = new StringTemplate(content, this.isRemovePlaceholders());
+		return stringTemplate.render(data);
 	}
 
 	public String getValue() {
@@ -81,12 +45,4 @@ public class Template extends Wiidget {
 		this.removePlaceholders = removePlaceholders;
 	}
 
-	protected boolean isCompilableTemplate() {
-
-		final WiidgetProperties properties = getWiidgetFactory().getWiidgetProperties();
-
-		final String fileSuffix = properties.getString(WiidgetProperties.WIIDGET_FILE_EXTENSION);
-
-		return getValue().endsWith(fileSuffix);
-	}
 }

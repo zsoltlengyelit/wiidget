@@ -13,16 +13,17 @@ public class WiidgetErrorStrategy extends DefaultErrorStrategy {
 
 	@Override
 	public void beginErrorCondition(@NotNull final Parser recognizer) {
-		// throw new WiidgetLexerException("Bad begin of file.");
+		super.beginErrorCondition(recognizer);
 	}
 
 	@Override
 	public boolean inErrorRecoveryMode(@NotNull final Parser recognizer) {
-		return true;
+		return false;
 	}
 
 	@Override
 	public void endErrorCondition(@NotNull final Parser recognizer) {
+		super.endErrorCondition(recognizer);
 	}
 
 	@Override
@@ -55,7 +56,13 @@ public class WiidgetErrorStrategy extends DefaultErrorStrategy {
 
 		} else {
 
-			super.reportError(recognizer, recognitionException);
+			final Token offendingToken = recognitionException.getOffendingToken();
+			int line = -1;
+			int charPositionInLine = -1;
+			line = offendingToken.getLine();
+			charPositionInLine = offendingToken.getCharPositionInLine();
+
+			throw new WiidgetLexerException("Error at " + line + ":" + charPositionInLine, recognitionException);
 		}
 
 	}

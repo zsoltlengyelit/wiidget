@@ -1,6 +1,8 @@
 package org.landa.wiidget.util;
 
 /**
+ * Basic properties of wiidgets.
+ * 
  * @author Zsolt Lengyel (zsolt.lengyel.it@gmail.com)
  */
 public interface WiidgetProperties {
@@ -18,5 +20,7 @@ public interface WiidgetProperties {
 	public Integer getInteger(final String key);
 
 	public String getString(final String key);
+
+	public String getDefault(String key, String defaultValue);
 
 }

@@ -2,13 +2,13 @@ package org.landa.wiidget.reflect;
 
 import java.lang.annotation.Annotation;
 
-public class ExtendedAnnotatedFieldAccessor<T extends Annotation> implements AnnotatedFiledAccessor<T> {
+public class AnnotatedFieldAccessor<T extends Annotation> implements AnnotatedAccessor<T> {
 
 	private final FieldAccessor fieldAccessor;
 
 	private final T annotation;
 
-	public ExtendedAnnotatedFieldAccessor(final FieldAccessor fieldAccessor, final T annotation) {
+	public AnnotatedFieldAccessor(final FieldAccessor fieldAccessor, final T annotation) {
 		super();
 		this.fieldAccessor = fieldAccessor;
 		this.annotation = annotation;

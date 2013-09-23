@@ -1,14 +1,23 @@
 package wiidget;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.landa.wiidget.Wiidget;
+import org.landa.wiidget.library.html.datatable.ArrayListPageable;
+import org.landa.wiidget.library.html.datatable.Pageable;
 
 public class DataFactory extends Wiidget {
 
 	@Override
 	public void run() {
+	}
+
+	public Pageable getPageable() {
+
+		return new ArrayListPageable<Animal>(getAnimals());
+
 	}
 
 	public List<Animal> getAnimals() {
@@ -27,6 +36,11 @@ public class DataFactory extends Wiidget {
 		animals.add(new Animal("Brúnó", 7));
 		animals.add(new Animal("Guga", 2));
 		animals.add(new Animal("Baba", 3));
+
+		animals.addAll(animals);
+		animals.addAll(animals);
+
+		Collections.shuffle(animals);
 
 		return animals;
 

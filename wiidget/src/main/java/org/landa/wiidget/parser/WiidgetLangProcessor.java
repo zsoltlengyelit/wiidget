@@ -336,7 +336,10 @@ public class WiidgetLangProcessor extends WiidgetView {
 			wiidgetMap.put(wiidgetVariable, wiidget);
 		}
 
-		processStatements(declarationContext.wiidgetBody().statementDeclaration());
+		// rendered property has meaning here
+		if (null != wiidget) {
+			processStatements(declarationContext.wiidgetBody().statementDeclaration());
+		}
 
 		endWiidget(wiidget);
 
@@ -431,11 +434,6 @@ public class WiidgetLangProcessor extends WiidgetView {
 	}
 
 	private Object processArgumentValue(final ElementValueContext valueContext) throws WiidgetParserException {
-
-		final LiteralContext literalContext = valueContext.literal();
-		if (null != literalContext) {
-			return evaluateLiteral(literalContext);
-		}
 
 		final QualifiedNameContext qualifiedNameContext = valueContext.qualifiedName();
 		if (null != qualifiedNameContext) {
@@ -694,7 +692,11 @@ public class WiidgetLangProcessor extends WiidgetView {
 		final Object firstOperand = evaluateExpression(firstExpression);
 		final Object secondOperand = evaluateExpression(secondExpression);
 
-		final boolean equals = firstOperand.equals(secondOperand);
+		boolean equals = false;
+		if (firstOperand == null ^ secondOperand == null) {
+			equals = false;
+		}
+		equals = null != firstOperand ? firstOperand.equals(secondOperand) : secondOperand.equals(secondOperand);
 
 		return "==".equals(operator) ? equals : !equals;
 	}
@@ -755,8 +757,16 @@ public class WiidgetLangProcessor extends WiidgetView {
 
 	private Object evaluateMathematicalExpression(final ExpressionContext firstOperandExpression, final String operator, final ExpressionContext secondOperandExpression) throws WiidgetParserException {
 
-		final Number firstOperand = (Number) evaluateExpression(firstOperandExpression);
-		final Number secondOperand = (Number) evaluateExpression(secondOperandExpression);
+		final Object firstExpr = evaluateExpression(firstOperandExpression);
+		final Object secondExpr = evaluateExpression(secondOperandExpression);
+
+		// string concatenation
+		if (operator.equals("+") && (firstExpr instanceof String || secondExpr instanceof String)) {
+			return stringConcatenation(firstExpr, secondExpr);
+		}
+
+		final Number firstOperand = (Number) firstExpr;
+		final Number secondOperand = (Number) secondExpr;
 
 		final boolean isFirstDouble = firstOperand instanceof Double;
 		final boolean isSecondDouble = secondOperand instanceof Double;
@@ -788,6 +798,20 @@ public class WiidgetLangProcessor extends WiidgetView {
 		}
 		return Integer.valueOf(result.intValue());
 
+	}
+
+	/**
+	 * Simple string concatenation.
+	 * 
+	 * @param firstExpr
+	 * @param secondExpr
+	 * @return
+	 */
+	private Object stringConcatenation(final Object firstExpr, final Object secondExpr) {
+		final String first = null == firstExpr ? "" : firstExpr.toString();
+		final String second = null == secondExpr ? "" : secondExpr.toString();
+
+		return first + second;
 	}
 
 	private Object[] evaluateExpressionList(final ExpressionListContext expressionListContext) throws WiidgetParserException {

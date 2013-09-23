@@ -6,12 +6,6 @@ import java.util.Map;
 
 public class DefaultWiidgetProperties implements WiidgetProperties {
 
-	public static final String FORMAT_OUTPUT = "wiidget.format_output";
-
-	public static final String FORMAT_INDENTATION = "wiidget.format_indentation";
-
-	public static final String WIIDGET_FILE_EXTENSION = "wiidget.file_extension";
-
 	private static Map<String, Object> DEFAULTS;
 
 	static {
@@ -51,5 +45,12 @@ public class DefaultWiidgetProperties implements WiidgetProperties {
 	@Override
 	public String getString(final String key) {
 		return String.valueOf(get(key));
+	}
+
+	@Override
+	public String getDefault(final String key, final String defaultValue) {
+		final Object value = get(key);
+
+		return null == value ? defaultValue : String.valueOf(value);
 	}
 }

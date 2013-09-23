@@ -3,6 +3,11 @@ package org.landa.wiidget.library.template;
 import org.landa.wiidget.Wiidget;
 import org.landa.wiidget.annotation.DefaultField;
 
+/**
+ * Represents a part of the whole page. Can use for store named content.
+ * 
+ * @author Zsolt Lengyel (zsolt.lengyel.it@gmail.com)
+ */
 public class Part extends Wiidget {
 
 	/**
@@ -33,7 +38,7 @@ public class Part extends Wiidget {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 

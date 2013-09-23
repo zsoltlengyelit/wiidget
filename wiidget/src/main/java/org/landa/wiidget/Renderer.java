@@ -88,17 +88,9 @@ public final class Renderer {
 	 */
 	public String render(final String template) {
 
-		final WiidgetLangProcessor langProcessor = new WiidgetLangProcessor(wiidgetFactory);
+		final String result = renderWithoutResources(template);
 
-		try {
-
-			final String result = langProcessor.render(template);
-
-			return transform(result);
-
-		} catch (final WiidgetParserException e) {
-			throw new WiidgetException("Template render failed.", e);
-		}
+		return transform(result);
 
 	}
 
@@ -144,9 +136,30 @@ public final class Renderer {
 
 		final String resourcePlace = placeResources(result);
 
-		final String transformed = wiidgetFactory.getResutlTransformerRegistrator().transform(resourcePlace);
+		final String transformed = getWiidgetFactory().getResutlTransformerRegistrator().transform(resourcePlace);
 
 		return transformed;
+	}
+
+	/**
+	 * Without placing resources.
+	 * 
+	 * @param template
+	 * @return
+	 */
+	public String renderWithoutResources(final String template) {
+		final WiidgetLangProcessor langProcessor = new WiidgetLangProcessor(wiidgetFactory);
+
+		try {
+
+			final String result = langProcessor.render(template);
+
+			return result;
+
+		} catch (final WiidgetParserException e) {
+			throw new WiidgetException("Template render failed.", e);
+		}
+
 	}
 
 	/**

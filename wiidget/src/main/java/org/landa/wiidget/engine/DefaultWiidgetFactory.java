@@ -1,6 +1,6 @@
 package org.landa.wiidget.engine;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -55,7 +55,7 @@ public class DefaultWiidgetFactory implements WiidgetFactory {
 	/**
 	 * Resource links.
 	 */
-	private final Set<ResourceLink> resourceLinks = new HashSet<ResourceLink>();
+	private final Set<ResourceLink> resourceLinks = new LinkedHashSet<ResourceLink>();
 
 	/**
 	 * Creates components instances.
@@ -126,10 +126,16 @@ public class DefaultWiidgetFactory implements WiidgetFactory {
 			final String field = attribute.getKey();
 			final Object value = attribute.getValue();
 
-			Reflection.setField(component, field, value);
+			try {
+				Reflection.setField(component, field, value);
+			} catch (final Exception exception) {
+
+				component.setAttribute(field, value);
+			}
 
 		}
 
+		// validation is after setting fields
 		validate(component);
 
 		return component;

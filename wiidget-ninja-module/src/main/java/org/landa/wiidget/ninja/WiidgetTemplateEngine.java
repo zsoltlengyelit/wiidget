@@ -1,6 +1,7 @@
 package org.landa.wiidget.ninja;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -80,7 +81,17 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 
 			map = new DataMap();
 			map.put(realClassNameLowerCamelCase, object);
+		}
 
+		// POST and GET variables
+		for (final Entry<String, String[]> param : context.getParameters().entrySet()) {
+			final String[] value = param.getValue();
+
+			if (value.length == 1) {
+				map.put(param.getKey(), value[0]);
+			} else {
+				map.put(param.getKey(), Arrays.asList(value));
+			}
 		}
 
 		// set language from framework. You can access

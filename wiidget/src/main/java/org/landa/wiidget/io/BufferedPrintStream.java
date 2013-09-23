@@ -3,6 +3,8 @@ package org.landa.wiidget.io;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
+import org.landa.wiidget.util.Strings;
+
 /**
  * Simple stream supporting interval buffering, while write in the stream.
  * 
@@ -59,7 +61,7 @@ public class BufferedPrintStream {
 			throw new RuntimeException("No buffered item.");
 		}
 
-		outputStreams.peek().append(string);
+		outputStreams.peek().append(Strings.emptyIfNull(string));
 	}
 
 }

@@ -8,28 +8,31 @@ public class StringTemplate {
 	private final String template;
 	private final Boolean removePlaceholders;
 
-	public StringTemplate(String template) {
-		this(template, false);
+	public StringTemplate(final String template) {
+		this(template, true);
 	}
 
-	public StringTemplate(String template, Boolean removePlaceholders) {
+	public StringTemplate(final String template, final Boolean removePlaceholders) {
 		this.template = template;
 		this.removePlaceholders = removePlaceholders;
 	}
 
-	public String render(Map<String, Object> data) {
+	public String render(final Map<String, Object> data) {
 
 		String base = template;
 
-		for (Entry<String, Object> entry : data.entrySet()) {
+		for (final Entry<String, Object> entry : data.entrySet()) {
 
-			String key = entry.getKey();
-			String value = entry.getValue().toString();
+			final String key = entry.getKey();
+			final String value = entry.getValue().toString();
 
-			String pattern = "\\{" + key + "}";
+			final String pattern = "\\{" + key + "}";
 
-			base = base.replaceAll(pattern, value);
-
+			try {
+				base = base.replaceAll(pattern, value);
+			} catch (final IllegalArgumentException argumentException) {
+				throw argumentException;
+			}
 		}
 
 		if (removePlaceholders) {

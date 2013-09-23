@@ -32,7 +32,7 @@ public class WiidgetLangCompiler extends Wiidget {
 		}
 
 		final Renderer renderer = Renderer.create(getWiidgetFactory());
-		final String viewResult = renderer.render(template);
+		final String viewResult = renderer.renderWithoutResources(template);
 
 		write(viewResult);
 	}

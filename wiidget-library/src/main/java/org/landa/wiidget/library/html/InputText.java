@@ -2,7 +2,12 @@ package org.landa.wiidget.library.html;
 
 import org.landa.wiidget.annotation.Attribute;
 
-public class InputText extends BaseTagWiidget {
+/**
+ * Input text HTML field.
+ * 
+ * @author Zsolt Lengyel (zsolt.lengyel.it@gmail.com)
+ */
+public class InputText extends HtmlTagWiidget {
 
 	@Attribute
 	private String name;

@@ -91,13 +91,13 @@ public final class Reflection {
 		return null;
 	}
 
-	public static <T extends Annotation> List<AnnotatedFiledAccessor<T>> getFieldAccessors(final Class<?> baseClass, final Class<T> annotation) {
+	public static <T extends Annotation> List<AnnotatedAccessor<T>> getFieldAccessors(final Class<?> baseClass, final Class<T> annotation) {
 
-		final List<AnnotatedFiledAccessor<T>> accessors = new ArrayList<AnnotatedFiledAccessor<T>>();
+		final List<AnnotatedAccessor<T>> accessors = new ArrayList<AnnotatedAccessor<T>>();
 
 		for (final Field field : getFields(baseClass, annotation)) {
 
-			final AnnotatedFiledAccessor<T> accessor = getAnnotatedFieldAccessor(field, annotation);
+			final AnnotatedAccessor<T> accessor = getAnnotatedFieldAccessor(field, annotation);
 
 			if (null != accessor) {
 				accessors.add(accessor);
@@ -106,13 +106,35 @@ public final class Reflection {
 		return accessors;
 	}
 
-	public static <T extends Annotation> AnnotatedFiledAccessor<T> getAnnotatedFieldAccessor(final Field field, final Class<T> annotationClass) {
+	/**
+	 * @param baseClass
+	 * @param annotation
+	 * @return
+	 */
+	public static <T extends Annotation> List<AnnotatedAccessor<T>> getMethodAccessors(final Class<?> baseClass, final Class<T> annotation) {
+
+		final List<AnnotatedAccessor<T>> accessors = new ArrayList<AnnotatedAccessor<T>>();
+
+		for (final Method method : getMethods(baseClass, annotation)) {
+
+			final FieldAccessor fieldAccessor = new GetterFieldAccessor(method, method.getName());
+
+			final AnnotatedAccessor<T> accessor = new AnnotatedFieldAccessor<T>(fieldAccessor, method.getAnnotation(annotation)); // //getAnnotatedFieldAccessor(field, annotation);
+
+			if (null != accessor) {
+				accessors.add(accessor);
+			}
+		}
+		return accessors;
+	}
+
+	public static <T extends Annotation> AnnotatedAccessor<T> getAnnotatedFieldAccessor(final Field field, final Class<T> annotationClass) {
 
 		final T annotation = field.getAnnotation(annotationClass);
 		if (null != annotation) {
 			final FieldAccessor fieldAccessor = getFieldAccessor(field);
 
-			return new ExtendedAnnotatedFieldAccessor<T>(fieldAccessor, annotation);
+			return new AnnotatedFieldAccessor<T>(fieldAccessor, annotation);
 		}
 
 		return null;
@@ -155,6 +177,40 @@ public final class Reflection {
 	}
 
 	/**
+	 * @param baseClass
+	 * @param annotation
+	 * @return
+	 */
+	public static List<Method> getMethods(final Class<?> baseClass, final Class<? extends Annotation> annotation) {
+
+		final List<Method> methods = new ArrayList<Method>();
+
+		for (final Method method : getDeclaredMethods(baseClass)) {
+			if (method.isAnnotationPresent(annotation)) {
+
+				methods.add(method);
+			}
+		}
+
+		return methods;
+	}
+
+	private static Method[] getDeclaredMethods(final Class<?> baseClass) {
+		final List<Method> methods = new ArrayList<Method>();
+
+		Class<?> parent = baseClass;
+
+		while (!Object.class.equals(parent)) {
+
+			methods.addAll(Arrays.asList(parent.getDeclaredMethods()));
+
+			parent = parent.getSuperclass();
+		}
+
+		return methods.toArray(new Method[0]);
+	}
+
+	/**
 	 * Returns the declared field of class hierarchy.
 	 * 
 	 * @param baseClass
@@ -181,10 +237,11 @@ public final class Reflection {
 	public static Object callMethod(final Object base, final String methodName, final Object[] parameters) {
 
 		try {
+
 			return MethodUtils.invokeMethod(base, methodName, parameters);
 
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			throw new org.landa.wiidget.reflect.ReflectionException("Cannot invoke method:" + methodName + " on class: " + base.getClass().getCanonicalName());
+			throw new org.landa.wiidget.reflect.ReflectionException("Cannot invoke method:" + methodName + " on class: " + base.getClass().getCanonicalName(), e);
 		}
 
 	}
