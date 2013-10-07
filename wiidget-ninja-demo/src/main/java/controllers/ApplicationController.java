@@ -86,7 +86,7 @@ public class ApplicationController {
 		final Formatter<Person> personFormatter = new PersonFormatter();
 
 		final DataMap data = new DataMap();
-		data.set("title", "Anett oldala");
+		data.set("title", "Wiidget demo site");
 		data.set("persons", persons);
 		data.set("formatter", formatter);
 		data.set("integerFormatter", integerFormatter);

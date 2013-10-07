@@ -39,7 +39,8 @@ public final class Renderer {
 	public static Renderer create(final Map<String, Object> data) {
 
 		final WiidgetContext wiidgetContext = new DefaultWiidgetContext(data);
-		final WiidgetFactory wiidgetFactory = new DefaultWiidgetFactory(wiidgetContext);
+		final WiidgetFactory wiidgetFactory = new DefaultWiidgetFactory(
+				wiidgetContext);
 
 		return create(wiidgetFactory);
 	}
@@ -100,7 +101,8 @@ public final class Renderer {
 	 */
 	public String render(final InputStream inputStream) {
 
-		final WiidgetLangProcessor langProcessor = new WiidgetLangProcessor(wiidgetFactory);
+		final WiidgetLangProcessor langProcessor = new WiidgetLangProcessor(
+				wiidgetFactory);
 
 		try {
 
@@ -136,7 +138,8 @@ public final class Renderer {
 
 		final String resourcePlace = placeResources(result);
 
-		final String transformed = getWiidgetFactory().getResutlTransformerRegistrator().transform(resourcePlace);
+		final String transformed = getWiidgetFactory()
+				.getResutlTransformerRegistrator().transform(resourcePlace);
 
 		return transformed;
 	}
@@ -148,7 +151,8 @@ public final class Renderer {
 	 * @return
 	 */
 	public String renderWithoutResources(final String template) {
-		final WiidgetLangProcessor langProcessor = new WiidgetLangProcessor(wiidgetFactory);
+		final WiidgetLangProcessor langProcessor = new WiidgetLangProcessor(
+				wiidgetFactory);
 
 		try {
 
@@ -170,11 +174,13 @@ public final class Renderer {
 
 		String resourcePlace = result;
 
-		for (final ResourceLink resourceLink : getWiidgetFactory().getResourceLinks()) {
+		for (final ResourceLink resourceLink : getWiidgetFactory()
+				.getResourceLinks()) {
 
 			final Position position = resourceLink.getPosition();
 			if (null == position) {
-				throw new WiidgetException("Resource (" + resourceLink.getSource() + ") has null position.");
+				throw new WiidgetException("Resource ("
+						+ resourceLink.getSource() + ") has null position.");
 			}
 
 			final String link = resourceLink.getTemplate();

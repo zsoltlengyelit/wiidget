@@ -10,7 +10,7 @@ public class PageableDataTable extends Table {
 
 	private Paginator paginator;
 
-	private Pageable pageable;
+	private Pageable<?> pageable;
 
 	@Override
 	public void init() {
@@ -20,7 +20,7 @@ public class PageableDataTable extends Table {
 			throw new WiidgetException("Value must be pageable");
 		}
 
-		this.pageable = (Pageable) super.getValue();
+		this.pageable = (Pageable<?>) super.getValue();
 	}
 
 	@Override

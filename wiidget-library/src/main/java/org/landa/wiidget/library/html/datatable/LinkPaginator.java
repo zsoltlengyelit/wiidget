@@ -5,6 +5,11 @@ import org.landa.wiidget.library.annotation.ContextVariable;
 import org.landa.wiidget.library.html.TemplatedHtmlWiidget;
 import org.landa.wiidget.validator.Required;
 
+/**
+ * 
+ * @author Zsolt Lengyel (zsolt.lengyel.it@gmail.com)
+ *
+ */
 public class LinkPaginator extends TemplatedHtmlWiidget implements Paginator {
 
 	@Required

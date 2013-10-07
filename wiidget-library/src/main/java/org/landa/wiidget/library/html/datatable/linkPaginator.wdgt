@@ -7,7 +7,7 @@ import wiidget.@;
 import org.landa.wiidget.library.util.@;
 
 
-$loopHelper : LoopHelper;
+$loops : Loops;
 
 // link paginator template
 Div(id = id, cssClass = cssClass){
@@ -26,7 +26,7 @@ Div(id = id, cssClass = cssClass){
 		}	
 		
 		// inner pages
-		foreach(page : $loopHelper.loop(1, pageCount, 1)){
+		foreach(page : $loops.numbers(1, pageCount, 1)){
 			
 			Li(cssClass = page == currentPage ? "active" : ""){
 				Link(href = ("?" + clientPageVar + "=" + page)){

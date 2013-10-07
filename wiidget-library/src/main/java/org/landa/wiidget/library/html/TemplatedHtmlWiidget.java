@@ -139,7 +139,7 @@ public abstract class TemplatedHtmlWiidget extends BaseTagWiidget {
 	protected String getTemplateName() {
 
 		final String simpleName = StringUtils.uncapitalize(getClass().getSimpleName());
-		final String packaged = getClass().getPackage().getName().replaceAll("\\.", "/") + '/' + simpleName;
+		final String packaged = '/' + getClass().getPackage().getName().replaceAll("\\.", "/") + '/' + simpleName;
 
 		final String wiidgetExtension = getWiidgetFactory().getWiidgetProperties().getString(WiidgetProperties.WIIDGET_FILE_EXTENSION);
 

@@ -40,8 +40,6 @@ public class DataFactory extends Wiidget {
 		animals.addAll(animals);
 		animals.addAll(animals);
 
-		Collections.shuffle(animals);
-
 		return animals;
 
 	}

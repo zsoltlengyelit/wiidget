@@ -26,17 +26,17 @@ public class StringTemplate {
 			final String key = entry.getKey();
 			final String value = entry.getValue().toString();
 
-			final String pattern = "\\{" + key + "}";
+			final String pattern = "{{" + key + "}}";
 
 			try {
-				base = base.replaceAll(pattern, value);
+				base = base.replace(pattern, value);
 			} catch (final IllegalArgumentException argumentException) {
 				throw argumentException;
 			}
 		}
 
 		if (removePlaceholders) {
-			base = base.replaceAll("\\{[^\\{}]*}", "");
+			base = base.replaceAll("\\{\\{[^\\{}}]*}}", "");
 		}
 
 		return base;
