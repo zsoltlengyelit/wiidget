@@ -1,4 +1,4 @@
-package org.landa.wiidget.library.html;
+package org.landa.wiidget.library.html.table;
 
 import org.landa.wiidget.Wiidget;
 import org.landa.wiidget.WiidgetException;

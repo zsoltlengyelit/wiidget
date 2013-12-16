@@ -11,6 +11,4 @@ public interface Paginator {
 
 	public int getPageCount();
 
-	public int getItemsPerPage();
-
 }

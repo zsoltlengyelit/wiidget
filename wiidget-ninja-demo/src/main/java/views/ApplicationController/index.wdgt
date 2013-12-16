@@ -1,6 +1,7 @@
 
 import org.landa.wiidget.library.template.@;
 import org.landa.wiidget.library.html.@;
+import org.landa.wiidget.library.html.table.@;
 import org.landa.wiidget.library.html.datatable.@;
 import org.landa.wiidget.library.html.base.@;
 import wiidget.@;
@@ -23,12 +24,21 @@ Template(value = "/views/layout/main.wdgt", removePlaceholders = true, messageVa
 		
 		$table : PageableDataTable(id="animals1", value = $data.getPageable(), cssClass="table table-striped table-hover"){
 			
+			Header(colspan = 1){
+				Heading("Animals");
+			}
+			
+			Header(colspan = 1){
+				LinkPaginator($table);
+			}
+						
 			Column(field = "name", header = "Név");
 			Column(field = "age", header = "Kora");
 			
-			LinkPaginator($table);		
-		}		
-		LinkPaginator($table);
+			Footer{
+				LinkPaginator($table);
+			}
+		}
 		
 		$table : PageableDataTable(id="animals2", value = $data.getPageable(), cssClass="table table-striped table-hover"){
 			

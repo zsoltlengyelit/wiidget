@@ -33,28 +33,29 @@ public class Tag implements Cloneable, Serializable {
 	/**
 	 * Contains names of non-empty HTML tags.
 	 */
-	private static List<String> nonEmptyTags = Collections.unmodifiableList(new ArrayList<String>() {
-		/**
-		 * generated serial
-		 */
-		private static final long serialVersionUID = 2426785812473436055L;
+	private static List<String> nonEmptyTags = Collections
+			.unmodifiableList(new ArrayList<String>() {
+				/**
+				 * generated serial
+				 */
+				private static final long serialVersionUID = 2426785812473436055L;
 
-		{
-			add("div");
-			add("span");
-			add("form");
-			add("textarea");
-			add("h1");
-			add("h2");
-			add("h3");
-			add("h4");
-			add("h5");
-			add("h6");
-			add("script");
-			add("pre");
-			// TODO add more non-empty tag
-		}
-	});
+				{
+					add("div");
+					add("span");
+					add("form");
+					add("textarea");
+					add("h1");
+					add("h2");
+					add("h3");
+					add("h4");
+					add("h5");
+					add("h6");
+					add("script");
+					add("pre");
+					// TODO add more non-empty tag
+				}
+			});
 
 	/**
 	 * Name of tag.
@@ -96,7 +97,8 @@ public class Tag implements Cloneable, Serializable {
 	 * @param children
 	 *            children objects
 	 */
-	public Tag(final String name, final Map<String, String> attributes, final List<Object> children) {
+	public Tag(final String name, final Map<String, String> attributes,
+			final List<Object> children) {
 		super();
 		this.name = name;
 		this.attributes = attributes;
@@ -180,8 +182,8 @@ public class Tag implements Cloneable, Serializable {
 	 *            attribute value
 	 * @return reference of object to chaining method
 	 */
-	public Tag setAttribute(final String key, final String value) {
-		this.attributes.put(key, value);
+	public Tag setAttribute(final String key, final Object value) {
+		this.attributes.put(key, value.toString());
 		return this;
 	}
 
@@ -194,7 +196,7 @@ public class Tag implements Cloneable, Serializable {
 	 *            attribute value
 	 * @return reference of object to chaining method
 	 */
-	public Tag a(final String key, final String value) {
+	public Tag a(final String key, final Object value) {
 		return setAttribute(key, value);
 	}
 
@@ -219,7 +221,8 @@ public class Tag implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Use for attributes like 'disabled', 'readonly'. When you ain't give value.
+	 * Use for attributes like 'disabled', 'readonly'. When you ain't give
+	 * value.
 	 * 
 	 * @param singleAttribute
 	 *            name of single attribute
@@ -344,6 +347,7 @@ public class Tag implements Cloneable, Serializable {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -354,12 +358,14 @@ public class Tag implements Cloneable, Serializable {
 
 		final StringBuilder builder = new StringBuilder("<");
 
-		builder.append(name).append(attributes.isEmpty() ? "" : " ").append(renderAttributes());
+		builder.append(name).append(attributes.isEmpty() ? "" : " ")
+				.append(renderAttributes());
 
 		if (children.isEmpty() && !nonEmptyTags.contains(name)) {
 			builder.append(" />");
 		} else {
-			builder.append(">").append(renderChildren()).append("</" + name + ">");
+			builder.append(">").append(renderChildren())
+					.append("</" + name + ">");
 		}
 
 		return builder.toString();
@@ -374,7 +380,8 @@ public class Tag implements Cloneable, Serializable {
 		final List<Object> clonedChildred = new ArrayList<Object>();
 		clonedChildred.addAll(children);
 
-		return new Tag(name).setAttributes(clonedAttributes).setChildren(clonedChildred);
+		return new Tag(name).setAttributes(clonedAttributes).setChildren(
+				clonedChildred);
 	}
 
 	/**
@@ -452,7 +459,8 @@ public class Tag implements Cloneable, Serializable {
 
 		for (final Entry<String, Object> attribute : data.entrySet()) {
 
-			attributes += " " + attribute.getKey() + "=\"" + attribute.getValue() + "\"";
+			attributes += " " + attribute.getKey() + "=\""
+					+ attribute.getValue() + "\"";
 
 		}
 

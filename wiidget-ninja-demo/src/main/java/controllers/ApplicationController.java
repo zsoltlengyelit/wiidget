@@ -45,11 +45,10 @@ public class ApplicationController {
 
 	/**
 	 * This is the system wide logger. You can still use any config you like. Or
-	 * create your own custom logger.
-	 * But often this is just a simple solution:
+	 * create your own custom logger. But often this is just a simple solution:
 	 */
 	@Inject
-	public Logger logger;
+	Logger logger;
 
 	@Inject
 	Lang lang;
@@ -94,10 +93,10 @@ public class ApplicationController {
 		data.set("personFormatter", personFormatter);
 
 		return Results.html().render(data);
-
 	}
 
-	public Result userDashboard(@PathParam("email") final String email, @PathParam("id") final Integer id, final Context context) {
+	public Result userDashboard(@PathParam("email") final String email,
+			@PathParam("id") final Integer id, final Context context) {
 
 		final Map<String, Object> map = new HashMap<String, Object>();
 		// generate tuples, convert integer to string here because Freemarker
@@ -110,10 +109,12 @@ public class ApplicationController {
 		return Results.html().render(map);
 	}
 
-	public Result validation(final Validation validation, @Param("email") @Required final String email) {
+	public Result validation(final Validation validation,
+			@Param("email") @Required final String email) {
 
 		if (validation.hasViolations()) {
-			return Results.json().render(validation.getFieldViolations("email"));
+			return Results.json()
+					.render(validation.getFieldViolations("email"));
 		} else {
 			return Results.json().render(email);
 		}

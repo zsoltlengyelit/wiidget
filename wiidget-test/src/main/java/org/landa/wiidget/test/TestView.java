@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import org.landa.wiidget.WiidgetView;
 import org.landa.wiidget.engine.DefaultWiidgetFactory;
-import org.landa.wiidget.library.html.Table;
+import org.landa.wiidget.library.html.table.Table;
 
 public class TestView extends WiidgetView {
 

@@ -1,0 +1,50 @@
+
+import org.landa.wiidget.library.template.@;
+import org.landa.wiidget.library.html.@;
+import org.landa.wiidget.library.html.base.@;
+
+Template(value = "/layout/main.html", removePlaceholders = false){
+
+	Part("body"){
+		
+		CssFile("../assets/css/bootstrap.css");
+		CssFile("../assets/css/style.css");
+		JavaScriptFile("../assets/js/bootstrap.min.js");
+	
+		// navbar container
+		Div(cssClass = "container"){
+			
+			Div(cssClass = "navbar"){
+				Div(cssClass = "navbar-inner"){
+					
+					Link(value = "Wiidget demo", href="#", cssClass="brand");
+					
+					Ul(cssClass = "nav"){
+						Li(cssClass = "active"){
+							Link(href="#", value="Home");
+						}
+						Li{
+							Link(href="#", value="Base wiidgets");
+						}
+					}
+				}
+			}	
+		}
+		
+		Div(cssClass = "container"){
+			
+			Div(cssClass = "row"){				
+				Div(cssClass = "span4"){					
+					Heading(content = "Menü", level = 2);
+				}
+				
+				Div(cssClass = "span8"){			
+					Placeholder("body");			
+				}
+			}
+		
+		}
+		
+	}
+	
+}

@@ -12,7 +12,8 @@ public class StringTemplate {
 		this(template, true);
 	}
 
-	public StringTemplate(final String template, final Boolean removePlaceholders) {
+	public StringTemplate(final String template,
+			final Boolean removePlaceholders) {
 		this.template = template;
 		this.removePlaceholders = removePlaceholders;
 	}
@@ -24,7 +25,8 @@ public class StringTemplate {
 		for (final Entry<String, Object> entry : data.entrySet()) {
 
 			final String key = entry.getKey();
-			final String value = entry.getValue().toString();
+			final String value = entry.getValue() == null ? "" : entry
+					.getValue().toString();
 
 			final String pattern = "\\{" + key + "}";
 
