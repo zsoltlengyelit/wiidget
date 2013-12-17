@@ -20,8 +20,9 @@ import org.landa.wiidget.util.Strings;
 import org.landa.wiidget.util.WiidgetProperties;
 
 /**
- * The wiidgets extend this class have an template file. By default this file is in the same folder, and named: '{class simple name}.tmpt'.
- * To template file we can put placeholders and variables.
+ * The wiidgets extend this class have an template file. By default this file is
+ * in the same folder, and named: '{class simple name}.tmpt'. To template file
+ * we can put placeholders and variables.
  * <p>
  * </p>
  * 
@@ -37,14 +38,16 @@ public abstract class TemplatedHtmlWiidget extends BaseTagWiidget {
 	@Override
 	public void init() {
 
-		final WiidgetContext wiidgetContext = getWiidgetFactory().getWiidgetContext();
+		final WiidgetContext wiidgetContext = getWiidgetFactory()
+				.getWiidgetContext();
 
 		final DataMap contextVariables = data();
 		contextVariables.putAll(getAttributeMap());
 		contextVariables.putAll(getContextVariables());
 
 		// set variables
-		for (final Entry<String, Object> attribute : contextVariables.entrySet()) {
+		for (final Entry<String, Object> attribute : contextVariables
+				.entrySet()) {
 			final String attributeName = attribute.getKey();
 			final Object attributeValue = attribute.getValue();
 
@@ -68,8 +71,10 @@ public abstract class TemplatedHtmlWiidget extends BaseTagWiidget {
 		final Class<?> ownClass = getClass();
 
 		// fields
-		final List<AnnotatedAccessor<ContextVariable>> fieldAccessors = Reflection.getFieldAccessors(ownClass, ContextVariable.class);
-		final List<AnnotatedAccessor<ContextVariable>> methodAccessors = Reflection.getMethodAccessors(ownClass, ContextVariable.class);
+		final List<AnnotatedAccessor<ContextVariable>> fieldAccessors = Reflection
+				.getFieldAccessors(ownClass, ContextVariable.class);
+		final List<AnnotatedAccessor<ContextVariable>> methodAccessors = Reflection
+				.getMethodAccessors(ownClass, ContextVariable.class);
 
 		fieldAccessors.addAll(methodAccessors);
 
@@ -78,7 +83,8 @@ public abstract class TemplatedHtmlWiidget extends BaseTagWiidget {
 			final ContextVariable attribute = accessor.getAnnotation();
 			final String variableName = attribute.name();
 
-			final String name = Strings.isEmpty(variableName) ? accessor.getFieldName() : variableName;
+			final String name = Strings.isEmpty(variableName) ? accessor
+					.getFieldName() : variableName;
 			final Object value = accessor.getValue(this);
 
 			if (null != value) {
@@ -86,7 +92,7 @@ public abstract class TemplatedHtmlWiidget extends BaseTagWiidget {
 			}
 		}
 
-		// methods
+		dataMap.set("this", this);
 
 		return dataMap;
 	}
@@ -110,10 +116,12 @@ public abstract class TemplatedHtmlWiidget extends BaseTagWiidget {
 	 * Restores previous values of setted variables.
 	 */
 	private void restoreContextVariables() {
-		final WiidgetContext wiidgetContext = getWiidgetFactory().getWiidgetContext();
+		final WiidgetContext wiidgetContext = getWiidgetFactory()
+				.getWiidgetContext();
 
 		// TODO remove own variables
-		for (final Entry<String, Object> attribute : previousContextValues.entrySet()) {
+		for (final Entry<String, Object> attribute : previousContextValues
+				.entrySet()) {
 			wiidgetContext.set(attribute.getKey(), attribute.getValue());
 		}
 	}
@@ -125,7 +133,8 @@ public abstract class TemplatedHtmlWiidget extends BaseTagWiidget {
 	 * @param data
 	 * @return
 	 */
-	protected String replacePlaceholders(final String content, final DataMap data) {
+	protected String replacePlaceholders(final String content,
+			final DataMap data) {
 
 		final StringTemplate stringTemplate = new StringTemplate(content);
 		return stringTemplate.render(data);
@@ -138,16 +147,23 @@ public abstract class TemplatedHtmlWiidget extends BaseTagWiidget {
 	 */
 	protected String getTemplateName() {
 
-		final String simpleName = StringUtils.uncapitalize(getClass().getSimpleName());
-		final String packaged = '/' + getClass().getPackage().getName().replaceAll("\\.", "/") + '/' + simpleName;
+		final String simpleName = StringUtils.uncapitalize(getClass()
+				.getSimpleName());
+		final String packaged = '/'
+				+ getClass().getPackage().getName().replaceAll("\\.", "/")
+				+ '/' + simpleName;
 
-		final String wiidgetExtension = getWiidgetFactory().getWiidgetProperties().getString(WiidgetProperties.WIIDGET_FILE_EXTENSION);
+		final String wiidgetExtension = getWiidgetFactory()
+				.getWiidgetProperties().getString(
+						WiidgetProperties.WIIDGET_FILE_EXTENSION);
 
 		// check wiidget template
-		final InputStream template = getClass().getResourceAsStream(simpleName + wiidgetExtension);
+		final InputStream template = getClass().getResourceAsStream(
+				simpleName + wiidgetExtension);
 
 		if (null == template) {
-			final String extension = getWiidgetFactory().getWiidgetProperties().getDefault("wiidget.template.extension", ".tmpt");
+			final String extension = getWiidgetFactory().getWiidgetProperties()
+					.getDefault("wiidget.template.extension", ".tmpt");
 			return packaged + extension;
 		}
 
@@ -169,9 +185,11 @@ public abstract class TemplatedHtmlWiidget extends BaseTagWiidget {
 			startBuffer();
 
 			try {
-				wiidget(WiidgetLangCompiler.class, data().set("value", fileContent));
+				wiidget(WiidgetLangCompiler.class,
+						data().set("value", fileContent));
 			} catch (final WiidgetLexerException exception) {
-				throw new WiidgetException("Failed to render file: " + fileName, exception);
+				throw new WiidgetException(
+						"Failed to render file: " + fileName, exception);
 			}
 
 			final String compileResult = endBuffer(); // get compile result
@@ -183,9 +201,11 @@ public abstract class TemplatedHtmlWiidget extends BaseTagWiidget {
 
 	protected boolean isCompilableTemplate(final String fileName) {
 
-		final WiidgetProperties properties = getWiidgetFactory().getWiidgetProperties();
+		final WiidgetProperties properties = getWiidgetFactory()
+				.getWiidgetProperties();
 
-		final String fileSuffix = properties.getString(WiidgetProperties.WIIDGET_FILE_EXTENSION);
+		final String fileSuffix = properties
+				.getString(WiidgetProperties.WIIDGET_FILE_EXTENSION);
 
 		return fileName.endsWith(fileSuffix);
 	}

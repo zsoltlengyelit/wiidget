@@ -10,7 +10,9 @@ import org.landa.wiidget.io.BufferedPrintStream;
 import org.landa.wiidget.util.DataMap;
 
 /**
- * @author Zsolti
+ * 
+ * @author Zsolt Lengyel (zsolt.lengyel.it@gmail.com)
+ * 
  */
 public abstract class Wiidget {
 
@@ -26,7 +28,7 @@ public abstract class Wiidget {
 
 	private WiidgetView owner;
 
-	private final java.util.List<Wiidget> children = new LinkedList<Wiidget>();
+	private final List<Wiidget> children = new LinkedList<Wiidget>();
 
 	/**
 	 * This method is invoked, when all the children's run method has invoked.
@@ -35,7 +37,8 @@ public abstract class Wiidget {
 	}
 
 	/**
-	 * This method is called, when the lang processor did not find the field in the class.
+	 * This method is called, when the lang processor did not find the field in
+	 * the class.
 	 * 
 	 * @param name
 	 *            name of the field
@@ -62,8 +65,10 @@ public abstract class Wiidget {
 		return wiidget(widgetClass, new DataMap());
 	}
 
-	protected <W extends Wiidget> W wiidget(final Class<W> widgetClass, final DataMap dataMap) {
-		final W widget = getWiidgetFactory().createWiidget(getOwner(), widgetClass, dataMap, false);
+	protected <W extends Wiidget> W wiidget(final Class<W> widgetClass,
+			final DataMap dataMap) {
+		final W widget = getWiidgetFactory().createWiidget(getOwner(),
+				widgetClass, dataMap, false);
 
 		if (widget.isRendered()) {
 			widget.init();
@@ -81,8 +86,10 @@ public abstract class Wiidget {
 		return beginWiidget(widgetClass, new DataMap());
 	}
 
-	protected <W extends Wiidget> W beginWiidget(final Class<W> widgetClass, final DataMap dataMap) {
-		final W widget = getWiidgetFactory().createWiidget(getOwner(), widgetClass, dataMap, true);
+	protected <W extends Wiidget> W beginWiidget(final Class<W> widgetClass,
+			final DataMap dataMap) {
+		final W widget = getWiidgetFactory().createWiidget(getOwner(),
+				widgetClass, dataMap, true);
 
 		if (widget.isRendered()) {
 			widget.init();
@@ -114,7 +121,8 @@ public abstract class Wiidget {
 		}
 
 		if (widget != popedWidget) {
-			throw new WiidgetException("Run specified widget failed. Maybe there is another unclosed widget.");
+			throw new WiidgetException(
+					"Run specified widget failed. Maybe there is another unclosed widget.");
 		}
 
 		if (widget.isRendered()) {
@@ -129,7 +137,8 @@ public abstract class Wiidget {
 		final Wiidget widget = getWiidgetFactory().getWiidgetStack().pop();
 
 		if (!widgetClass.isAssignableFrom(widget.getClass())) {
-			throw new WiidgetException("Run specified widget failed. Maybe there is another unclosed widget.");
+			throw new WiidgetException(
+					"Run specified widget failed. Maybe there is another unclosed widget.");
 		}
 
 		if (widget.isRendered()) {
@@ -185,7 +194,9 @@ public abstract class Wiidget {
 		final List<W> children = getChildren(wiidgetClass);
 
 		if (children.size() > 1) {
-			throw new WiidgetException("The wiidget has more than one children with type: " + wiidgetClass.getCanonicalName());
+			throw new WiidgetException(
+					"The wiidget has more than one children with type: "
+							+ wiidgetClass.getCanonicalName());
 		}
 
 		if (children.isEmpty()) {
@@ -222,6 +233,7 @@ public abstract class Wiidget {
 		String content = "";
 
 		try {
+
 			final InputStream file = getClass().getResourceAsStream(path);
 
 			if (file == null) {
@@ -238,14 +250,20 @@ public abstract class Wiidget {
 		return content;
 	}
 
-	private static String readFile(final InputStream inputStream) throws IOException {
+	private static String readFile(final InputStream inputStream)
+			throws IOException {
 		@SuppressWarnings("resource")
-		final java.util.Scanner s = new java.util.Scanner(inputStream).useDelimiter("\\A");
+		final java.util.Scanner s = new java.util.Scanner(inputStream)
+				.useDelimiter("\\A");
 		return s.hasNext() ? s.next() : "";
 	}
 
 	protected void write(final String string) {
 		getPrintStream().write(string);
+	}
+
+	protected void write(final Object object) {
+		write(object.toString());
 	}
 
 	protected BufferedPrintStream getPrintStream() {

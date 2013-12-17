@@ -1,10 +1,15 @@
 package org.landa.wiidget.library.html.base;
 
-import org.landa.wiidget.Wiidget;
 import org.landa.wiidget.annotation.DefaultField;
-import org.landa.wiidget.library.Tag;
+import org.landa.wiidget.library.html.HtmlTagWiidget;
 
-public class Heading extends Wiidget {
+/**
+ * HTML Heading.
+ * 
+ * @author Zsolt Lengyel (zsolt.lengyel.it@gmail.com)
+ * 
+ */
+public class Heading extends HtmlTagWiidget {
 
 	@DefaultField
 	private String content;
@@ -12,22 +17,8 @@ public class Heading extends Wiidget {
 	private Integer level = 1;
 
 	@Override
-	public void init() {
-		super.init();
-
-		startBuffer();
-	}
-
-	@Override
-	public void run() {
-
-		write(Tag.open("h" + getLevel()));
-
-		write(getContent());
-		write(endBuffer());
-
-		write(Tag.close("h" + getLevel()));
-
+	public String getTagName() {
+		return "h" + getLevel();
 	}
 
 	public String getContent() {

@@ -23,6 +23,7 @@ import org.landa.wiidget.engine.DefaultWiidgetFactory;
 import org.landa.wiidget.engine.ObjectFactory;
 import org.landa.wiidget.engine.ResultTransformerRegistrator;
 import org.landa.wiidget.engine.WiidgetFactory;
+import org.landa.wiidget.url.URLResolver;
 import org.landa.wiidget.util.DataMap;
 import org.landa.wiidget.util.WiidgetProperties;
 import org.landa.wiidget.validation.WiidgetValidator;
@@ -47,8 +48,14 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 	private final Injector injector;
 
 	@Inject
-	public WiidgetTemplateEngine(final Messages messages, final Lang lang, final org.slf4j.Logger logger, final TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler,
-	        final WiidgetTemplateEngineHelper templateEngineHelper, final TemplateEngineManager templateEngineManager, final WiidgetProperties properties, final Injector injector) {
+	public WiidgetTemplateEngine(
+			final Messages messages,
+			final Lang lang,
+			final org.slf4j.Logger logger,
+			final TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler,
+			final WiidgetTemplateEngineHelper templateEngineHelper,
+			final TemplateEngineManager templateEngineManager,
+			final WiidgetProperties properties, final Injector injector) {
 
 		this.messages = messages;
 		this.lang = lang;
@@ -77,14 +84,17 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 
 		} else {
 
-			final String realClassNameLowerCamelCase = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, object.getClass().getSimpleName());
+			final String realClassNameLowerCamelCase = CaseFormat.UPPER_CAMEL
+					.to(CaseFormat.LOWER_CAMEL, object.getClass()
+							.getSimpleName());
 
 			map = new DataMap();
 			map.put(realClassNameLowerCamelCase, object);
 		}
 
 		// POST and GET variables
-		for (final Entry<String, String[]> param : context.getParameters().entrySet()) {
+		for (final Entry<String, String[]> param : context.getParameters()
+				.entrySet()) {
 			final String[] value = param.getValue();
 
 			if (value.length == 1) {
@@ -96,7 +106,8 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 
 		// set language from framework. You can access
 		// it in the templates as ${lang}
-		final Optional<String> language = lang.getLanguage(context, Optional.of(result));
+		final Optional<String> language = lang.getLanguage(context,
+				Optional.of(result));
 		if (language.isPresent()) {
 			map.put("lang", language.get());
 		}
@@ -114,7 +125,8 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 		// to render i18n messages
 		// ////////////////////////////////////////////////////////////////////
 		// merge messages with this template...
-		final Map<Object, Object> i18nMap = messages.getAll(context, Optional.of(result));
+		final Map<Object, Object> i18nMap = messages.getAll(context,
+				Optional.of(result));
 
 		for (final Entry<Object, Object> entry : i18nMap.entrySet()) {
 
@@ -126,7 +138,8 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 		// placeholders directly in your template:
 		// E.g.: ${i18n("mykey", myPlaceholderVariable)}
 		// ////////////////////////////////////////////////////////////////////
-		map.put("i18n", new TemplateEngineFreemarkerI18nMethod(messages, context, result));
+		map.put("i18n", new TemplateEngineFreemarkerI18nMethod(messages,
+				context, result));
 
 		// /////////////////////////////////////////////////////////////////////
 		// Convenience method to translate possible flash scope keys.
@@ -139,11 +152,13 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 		//
 		// prefix keys with "flash_"
 		// ////////////////////////////////////////////////////////////////////
-		for (final Entry<String, String> entry : context.getFlashCookie().getCurrentFlashCookieData().entrySet()) {
+		for (final Entry<String, String> entry : context.getFlashCookie()
+				.getCurrentFlashCookieData().entrySet()) {
 
 			String messageValue = null;
 
-			final Optional<String> messageValueOptional = messages.get(entry.getValue(), context, Optional.of(result));
+			final Optional<String> messageValueOptional = messages.get(
+					entry.getValue(), context, Optional.of(result));
 
 			if (!messageValueOptional.isPresent()) {
 				messageValue = entry.getValue();
@@ -173,15 +188,18 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 			final Renderer renderer = Renderer.create(wiidgetFactory);
 
 			try {
-				final Class<WiidgetView> wiidgetViewClass = templateEngineHelper.getViewClass(context.getRoute(), result);
+				final Class<WiidgetView> wiidgetViewClass = templateEngineHelper
+						.getViewClass(context.getRoute(), result);
 
-				final WiidgetView wiidgetView = injector.getInstance(wiidgetViewClass);
+				final WiidgetView wiidgetView = injector
+						.getInstance(wiidgetViewClass);
 
 				viewResult = renderer.render(wiidgetView);
 
 			} catch (final ClassNotFoundException notFoundException) {
 
-				final InputStream stream = templateEngineHelper.getResource(context.getRoute(), result);
+				final InputStream stream = templateEngineHelper.getResource(
+						context.getRoute(), result);
 
 				viewResult = renderer.render(stream);
 
@@ -195,7 +213,8 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 		} catch (final Exception e) {
 			logger.error("Error processing template ", e);
 
-			throw new WiidgetException("Error while process template: " + processedTemplate, e);
+			throw new WiidgetException("Error while process template: "
+					+ processedTemplate, e);
 
 		}
 
@@ -203,12 +222,19 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 
 	private WiidgetFactory createWiidgetFactory() {
 
-		final ObjectFactory objectFactory = injector.getInstance(ObjectFactory.class);
-		final WiidgetValidator validator = injector.getInstance(WiidgetValidator.class);
-		final WiidgetProperties wiidgetProperties = injector.getInstance(WiidgetProperties.class);
-		final WiidgetContext context = injector.getInstance(WiidgetContext.class);
+		final ObjectFactory objectFactory = injector
+				.getInstance(ObjectFactory.class);
+		final WiidgetValidator validator = injector
+				.getInstance(WiidgetValidator.class);
+		final WiidgetProperties wiidgetProperties = injector
+				.getInstance(WiidgetProperties.class);
+		final WiidgetContext context = injector
+				.getInstance(WiidgetContext.class);
+		final URLResolver urlResolver = injector.getInstance(URLResolver.class);
 
-		return new DefaultWiidgetFactory(objectFactory, validator, wiidgetProperties, context, new ResultTransformerRegistrator());
+		return new DefaultWiidgetFactory(objectFactory, validator,
+				wiidgetProperties, context, new ResultTransformerRegistrator(),
+				urlResolver);
 	}
 
 	private WiidgetContext getWiidgetContext() {

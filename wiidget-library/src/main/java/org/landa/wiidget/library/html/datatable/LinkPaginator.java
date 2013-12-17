@@ -8,7 +8,7 @@ import org.landa.wiidget.validator.Required;
 /**
  * 
  * @author Zsolt Lengyel (zsolt.lengyel.it@gmail.com)
- *
+ * 
  */
 public class LinkPaginator extends TemplatedHtmlWiidget implements Paginator {
 
@@ -25,6 +25,9 @@ public class LinkPaginator extends TemplatedHtmlWiidget implements Paginator {
 
 	@ContextVariable
 	private String listCssClass = "paginator-list";
+
+	@ContextVariable
+	private final String itemCssClass = "item";
 
 	@ContextVariable
 	private String prevPageLabel = "&laquo;";
@@ -49,7 +52,8 @@ public class LinkPaginator extends TemplatedHtmlWiidget implements Paginator {
 	public int getCurrentPage() {
 		final String clientPageVar = getClientPageVar();
 
-		final Object pageObj = getWiidgetFactory().getWiidgetContext().get(clientPageVar);
+		final Object pageObj = getWiidgetFactory().getWiidgetContext().get(
+				clientPageVar);
 		if (null == pageObj) {
 			return 1;
 		} else {
@@ -95,6 +99,13 @@ public class LinkPaginator extends TemplatedHtmlWiidget implements Paginator {
 
 	public void setListCssClass(final String listCssClass) {
 		this.listCssClass = listCssClass;
+	}
+
+	/**
+	 * @return the itemCssClass
+	 */
+	public String getItemCssClass() {
+		return itemCssClass;
 	}
 
 	public String getCssClass() {

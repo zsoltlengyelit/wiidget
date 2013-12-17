@@ -3,6 +3,7 @@ package org.landa.wiidget.io;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
+import org.landa.wiidget.WiidgetException;
 import org.landa.wiidget.util.Strings;
 
 /**
@@ -40,7 +41,8 @@ public class BufferedPrintStream {
 			return stringBuilder.toString();
 
 		} catch (final EmptyStackException emptyStackException) {
-			throw new RuntimeException("No item in buffer.", emptyStackException);
+			throw new RuntimeException("No item in buffer.",
+					emptyStackException);
 		}
 
 	}
@@ -49,7 +51,8 @@ public class BufferedPrintStream {
 		final String buffer = endBuffer();
 
 		if (!outputStreams.isEmpty()) {
-			throw new RuntimeException("Buffer is not empty");
+			throw new WiidgetException("Buffer is not empty: \""
+					+ outputStreams.toString() + "\"");
 		}
 
 		return buffer;

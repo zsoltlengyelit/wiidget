@@ -15,7 +15,7 @@ Div(id = id, cssClass = cssClass){
 	Ul(cssClass = listCssClass){
 		
 		// prev page
-		Li(cssClass = currentPage == 1 ? "disabled" : ""){
+		Li(cssClass = (currentPage == 1 ? "disabled" : "") + itemCssClass){
 			Link(rendered = currentPage != 1, href = ("?" + clientPageVar + "=" + (currentPage - 1))){
 				Out(prevPageLabel);
 			}
@@ -28,7 +28,7 @@ Div(id = id, cssClass = cssClass){
 		// inner pages
 		foreach(page : $loops.numbers(1, pageCount, 1)){
 			
-			Li(cssClass = page == currentPage ? "active" : ""){
+			Li(cssClass = (page == currentPage ? "active" : "") + itemCssClass){
 				Link(href = ("?" + clientPageVar + "=" + page)){
 					Out(page);
 				}
@@ -36,7 +36,7 @@ Div(id = id, cssClass = cssClass){
 		}
 		
 		// next page
-		Li(cssClass = currentPage == pageCount ? "disabled" : ""){
+		Li(cssClass = (currentPage == pageCount ? "disabled" : "") + itemCssClass){
 			Link(rendered = currentPage < pageCount, href = ("?" + clientPageVar + "=" + (currentPage + 1))){
 				Out(nextPageLabel);
 			}

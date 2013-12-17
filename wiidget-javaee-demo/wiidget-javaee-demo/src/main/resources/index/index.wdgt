@@ -1,0 +1,63 @@
+
+import org.landa.wiidget.library.template.@;
+import org.landa.wiidget.library.html.@;
+import org.landa.wiidget.library.html.table.@;
+import org.landa.wiidget.library.html.datatable.@;
+import org.landa.wiidget.library.html.base.@;
+import org.landa.wiidget.library.util.@;
+import wiidget.@;
+
+
+$loops : Loops;
+
+Template(value = "/layout/main.wdgt", removePlaceholders = true, messageVal = "From template"){
+	
+	SimplePart(name = "title", value = title ~ "Default page title");
+	
+	Part("body"){
+		
+		Div{
+			Out(messageVal);
+		}
+		
+//		seam($factory.table($data.getAnimals(), m["hello"] )){			
+//			Column(field = "name", header = "Név");
+//			Column(field = "age", header = "Kora");			
+//		}
+		
+		Accordion{
+			
+			AccordionItem(active = true){
+				Part("title"){
+					Out("Title")
+				}
+				Part("content"){
+					Out("Content");
+				}
+			}
+			AccordionItem{
+				Part("title"){
+					Out("Title2")
+				}
+				Part("content"){
+					Out("Content2");
+				}
+			}
+			
+		}
+	
+		$table : PageableDataTable(id="animals" + i, value=animals, cssClass="ui inverted red segment table"){
+			
+			Column(field = "name", header = "Név");
+			Column(field = "age", header = "Kora");
+			
+			LinkPaginator(dataTable = $table, itemsPerPage = 5, cssClass="ui pagination menu");		
+		}
+		LinkPaginator(dataTable = $table, itemsPerPage = 5, cssClass="ui pagination menu");
+	
+		Paragraph{
+			Label(fafd ~ "Default value");		
+			Label(value = m["hello"], rendered = flash_error ~ true);
+		}
+	}	
+}
