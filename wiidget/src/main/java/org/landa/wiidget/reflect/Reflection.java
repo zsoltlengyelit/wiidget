@@ -88,7 +88,7 @@ public final class Reflection {
 			return new GetterFieldAccessor(getterMethod, field.getName());
 		}
 
-		return null;
+		throw new IllegalArgumentException("Cannot access the field: " + field.toString());
 	}
 
 	public static <T extends Annotation> List<AnnotatedAccessor<T>> getFieldAccessors(final Class<?> baseClass, final Class<T> annotation) {

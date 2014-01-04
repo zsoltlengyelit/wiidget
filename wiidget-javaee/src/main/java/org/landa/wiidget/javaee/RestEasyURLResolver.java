@@ -1,5 +1,7 @@
 package org.landa.wiidget.javaee;
 
+import java.io.Serializable;
+
 import javax.enterprise.inject.Default;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.UriBuilder;
@@ -13,7 +15,7 @@ import org.landa.wiidget.url.URLResolver;
  * 
  */
 @Default
-public class RestEasyURLResolver implements URLResolver {
+public class RestEasyURLResolver implements URLResolver, Serializable {
 
 	@Override
 	public String createAbsoluteURL(final String path) {

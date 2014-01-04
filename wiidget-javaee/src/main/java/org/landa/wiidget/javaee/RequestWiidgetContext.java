@@ -1,5 +1,6 @@
 package org.landa.wiidget.javaee;
 
+import java.io.Serializable;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -18,7 +19,7 @@ import org.landa.wiidget.context.DefaultWiidgetContext;
  */
 @Default
 @RequestScoped
-public class RequestWiidgetContext extends DefaultWiidgetContext {
+public class RequestWiidgetContext extends DefaultWiidgetContext implements Serializable {
 
 	@PostConstruct
 	private void init() {

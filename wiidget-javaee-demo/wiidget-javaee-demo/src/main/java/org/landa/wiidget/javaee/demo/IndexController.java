@@ -17,35 +17,24 @@ import org.landa.wiidget.util.DataMap;
 @RequestScoped
 public class IndexController {
 
-	@Inject
-	private Renderer renderer;
+	public IndexController() {
+		super();
+	}
 
 	@Inject
-	private WiidgetContext wiidgetContext;
+	private LoginView loginView;
+
+	@GET
+	@Path("/login")
+	public Response index2() {
+
+		return Response.ok(loginView.render()).build();
+	}
 
 	@GET
 	public Response index() {
 
-		wiidgetContext.set("m", new DataMap().set("title", "Title"));
-
-		wiidgetContext.set(
-				"animals",
-				new ArrayListPageable<Animal>(Arrays.asList(
-						new Animal("Ló", 1), new Animal("Ló", 1), new Animal(
-								"Cica", 2), new Animal("Ló", 1), new Animal(
-								"Cica", 2), new Animal("Ló", 1), new Animal(
-								"Cica", 2), new Animal("Ló", 1), new Animal(
-								"Cica", 2), new Animal("Ló", 1), new Animal(
-								"Cica", 2), new Animal("Cica", 2), new Animal(
-								"Ló", 1), new Animal("Cica", 2), new Animal(
-								"Ló", 1), new Animal("Cica", 2), new Animal(
-								"Ló", 1), new Animal("Cica", 2), new Animal(
-								"Ló", 1), new Animal("Cica", 2))));
-
-		final String rendered = renderer.render(getClass().getResourceAsStream(
-				"/index/index.wdgt"));
-
-		return Response.ok(rendered).build();
+		return Response.ok(loginView.render()).build();
 	}
 
 	public static class Animal {

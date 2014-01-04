@@ -10,7 +10,6 @@ import org.landa.wiidget.validator.Required;
  */
 public class Out extends Wiidget {
 
-	@Required
 	private String value;
 
 	@Override
