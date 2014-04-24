@@ -1,5 +1,10 @@
 package org.landa.wiidget.javaee;
 
+<<<<<<< HEAD
+=======
+import java.io.Serializable;
+
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -16,7 +21,11 @@ import org.landa.wiidget.validation.DefaultWiidgetValidator;
  * @author Zsolt Lengyel (zsolt.lengyel.it@gmail.com)
  * 
  */
+<<<<<<< HEAD
 public class CDIWiidgetFactory extends DefaultWiidgetFactory {
+=======
+public class CDIWiidgetFactory extends DefaultWiidgetFactory implements Serializable{
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 
 	@Inject
 	private ObjectFactory cdiObjectFactory;

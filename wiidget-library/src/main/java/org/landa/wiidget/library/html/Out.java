@@ -9,8 +9,9 @@ import org.landa.wiidget.Wiidget;
  */
 public class Out extends Wiidget {
 
+
 	/**
-	 * Valud to write to output.
+	 * Value to write to output.
 	 */
 	private String value;
 

@@ -17,15 +17,32 @@ import org.landa.wiidget.util.DataMap;
 @RequestScoped
 public class IndexController {
 
+<<<<<<< HEAD
 	@Inject
 	private Renderer renderer;
 
 	@Inject
 	private WiidgetContext wiidgetContext;
+=======
+	public IndexController() {
+		super();
+	}
+
+	@Inject
+	private LoginView loginView;
+
+	@GET
+	@Path("/login")
+	public Response index2() {
+
+		return Response.ok(loginView.render()).build();
+	}
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 
 	@GET
 	public Response index() {
 
+<<<<<<< HEAD
 		wiidgetContext.set("m", new DataMap().set("title", "Title"));
 
 		wiidgetContext.set(
@@ -46,6 +63,9 @@ public class IndexController {
 				"/index/index.wdgt"));
 
 		return Response.ok(rendered).build();
+=======
+		return Response.ok(loginView.render()).build();
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 	}
 
 	public static class Animal {

@@ -4,6 +4,11 @@ import org.landa.wiidget.annotation.DefaultField;
 import org.landa.wiidget.library.html.TemplatedHtmlWiidget;
 import org.landa.wiidget.validator.Required;
 
+/**
+ * 
+ * @author Zsolt Lengyel (zsolt.lengyel.it@gmail.com)
+ * 
+ */
 public class LinkPaginator extends TemplatedHtmlWiidget implements Paginator {
 
 	@Required
@@ -16,6 +21,8 @@ public class LinkPaginator extends TemplatedHtmlWiidget implements Paginator {
 	private String pageVar = "page";
 
 	private String listCssClass = "paginator-list";
+
+	private final String itemCssClass = "item";
 
 	private String prevPageLabel = "&laquo;";
 
@@ -80,6 +87,13 @@ public class LinkPaginator extends TemplatedHtmlWiidget implements Paginator {
 
 	public void setListCssClass(final String listCssClass) {
 		this.listCssClass = listCssClass;
+	}
+
+	/**
+	 * @return the itemCssClass
+	 */
+	public String getItemCssClass() {
+		return itemCssClass;
 	}
 
 	public String getCssClass() {

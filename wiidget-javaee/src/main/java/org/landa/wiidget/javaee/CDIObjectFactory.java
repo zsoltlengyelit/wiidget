@@ -1,6 +1,12 @@
 package org.landa.wiidget.javaee;
 
+<<<<<<< HEAD
 import java.util.Iterator;
+=======
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.logging.Logger;
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Default;
@@ -8,6 +14,10 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
+<<<<<<< HEAD
+=======
+import org.landa.wiidget.WiidgetException;
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 import org.landa.wiidget.engine.ObjectFactory;
 
 /**
@@ -16,10 +26,20 @@ import org.landa.wiidget.engine.ObjectFactory;
  * 
  */
 @Default
+<<<<<<< HEAD
 public class CDIObjectFactory implements ObjectFactory {
 
 	@Inject
 	private BeanManager beanManager;
+=======
+public class CDIObjectFactory implements ObjectFactory , Serializable{
+
+
+	@Inject
+	private BeanManager beanManager;
+	
+
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 
 	@Override
 	public <T> T getInstance(final Class<T> clazz) {
@@ -33,9 +53,15 @@ public class CDIObjectFactory implements ObjectFactory {
 			try {
 				return clazz.newInstance();
 			} catch (final InstantiationException e) {
+<<<<<<< HEAD
 				return null;
 			} catch (final IllegalAccessException e) {
 				return null;
+=======
+				throw new WiidgetException("Cannot instantiate class.", e);
+			} catch (final IllegalAccessException e) {
+				throw new WiidgetException("Cannot instantiate class.", e);
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 			}
 		}
 		final Bean<T> bean = (Bean<T>) iter.next();

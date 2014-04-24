@@ -233,8 +233,9 @@ public abstract class Wiidget {
 		String content = "";
 
 		try {
-			final InputStream file = getClass().getClassLoader()
-					.getResourceAsStream(path);
+
+
+			final InputStream file = getClass().getResourceAsStream(path);
 
 			if (file == null) {
 				throw new WiidgetException("Cannot found file: " + path);

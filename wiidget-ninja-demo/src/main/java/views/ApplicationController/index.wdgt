@@ -17,6 +17,8 @@ Template(value = "/views/layout/main.wdgt", removePlaceholders = true, messageVa
 		
 		Out(messageVal);
 		
+		table();
+		
 		seam($factory.table($data.getAnimals(), m["hello"] )){			
 			Column(field = "name", header = "Név");
 			Column(field = "age", header = "Kora");			
@@ -45,7 +47,7 @@ Template(value = "/views/layout/main.wdgt", removePlaceholders = true, messageVa
 			Column(field = "name", header = "Név");
 			Column(field = "age", header = "Kora");
 			
-			LinkPaginator(dataTable = $table, itemsPerPage = 12);		
+			LinkPaginator(dataTable = $table, itemsPerPage = 5);		
 		}		
 		
 		

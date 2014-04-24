@@ -10,6 +10,13 @@ public class AnnotatedFieldAccessor<T extends Annotation> implements AnnotatedAc
 
 	public AnnotatedFieldAccessor(final FieldAccessor fieldAccessor, final T annotation) {
 		super();
+		
+		if(null == fieldAccessor)
+			throw new IllegalArgumentException("Field accessor is null");
+		
+		if(null == annotation)
+			throw new IllegalArgumentException("Annotation is null");
+		
 		this.fieldAccessor = fieldAccessor;
 		this.annotation = annotation;
 	}

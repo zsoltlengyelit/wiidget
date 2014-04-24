@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="wiidget-javaee-demo:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="wiidget-javaee-demo.war">
+      <element id="artifact" artifact-name="wiidget-javaee-demo:war exploded" />
+    </root>
+  </artifact>
+</component>

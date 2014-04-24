@@ -7,6 +7,7 @@ Template(value = "/layout/main.html", removePlaceholders = false){
 
 	Part("body"){
 		
+<<<<<<< HEAD
 		CssFile("../assets/css/bootstrap.css");
 		CssFile("../assets/css/style.css");
 		JavaScriptFile("../assets/js/bootstrap.min.js");
@@ -43,6 +44,31 @@ Template(value = "/layout/main.html", removePlaceholders = false){
 				}
 			}
 		
+=======
+		CssFile("../assets/css/semantic.css");
+		CssFile("../assets/css/style.css");
+		
+		JavaScriptFile("http://code.jquery.com/jquery-2.0.3.min.js");
+		JavaScriptFile("../assets/javascript/semantic.min.js");
+		JavaScriptFile("../assets/javascript/semantic.js");		
+	
+		Div(cssClass="ui menu"){
+			Link(cssClass="item"){
+				Out("Home");
+			}
+			Link(cssClass="item"){
+				Out("Inbox");
+			}
+		}
+		
+		Div(cssClass = "ui segment"){
+							
+			Heading(content = "Menü", cssClass="ui dividing header", level=2);
+			
+			Div(cssClass = "span8"){			
+				Placeholder("body");			
+			}
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 		}
 		
 	}

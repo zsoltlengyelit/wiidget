@@ -32,7 +32,7 @@ foreachControl
     ;
 
 foreachVariable
-    : Identifier
+    : Identifier (ARROW Identifier)?
     ;      
 
 wiidgetDeclaration
@@ -442,6 +442,7 @@ RBRACK : ']';
 SEMI : ';';
 COMMA : ',';
 DOT : '.';
+ARROW : '->';
 
 // Operators
 

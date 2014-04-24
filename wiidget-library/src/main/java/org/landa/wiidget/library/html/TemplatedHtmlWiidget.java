@@ -32,6 +32,7 @@ public abstract class TemplatedHtmlWiidget extends BaseTagWiidget {
 	@Override
 	public void init() {
 
+
 		// bind this wiidget to context
 		getWiidgetFactory().getWiidgetContext().set(THIS_VAR, this);
 
@@ -50,7 +51,9 @@ public abstract class TemplatedHtmlWiidget extends BaseTagWiidget {
 
 		write(content);
 
+
 		getWiidgetFactory().getWiidgetContext().remove(THIS_VAR);
+
 	}
 
 	/**
@@ -76,9 +79,8 @@ public abstract class TemplatedHtmlWiidget extends BaseTagWiidget {
 
 		final String simpleName = StringUtils.uncapitalize(getClass()
 				.getSimpleName());
-		final String packaged = getClass().getPackage().getName()
-				.replaceAll("\\.", "/")
-				+ '/' + simpleName;
+
+		final String packaged = '/'	+ getClass().getPackage().getName().replaceAll("\\.", "/")			+ '/' + simpleName;
 
 		final String wiidgetExtension = getWiidgetFactory()
 				.getWiidgetProperties().getString(

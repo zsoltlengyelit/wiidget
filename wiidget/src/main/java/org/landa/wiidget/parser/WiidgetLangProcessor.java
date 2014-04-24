@@ -58,20 +58,45 @@ import org.landa.wiidget.util.DataMap;
  */
 public class WiidgetLangProcessor extends WiidgetView {
 
-	Map<String, Class<? extends Wiidget>> importClassMap;
+	Map<String, Class<? extends Wiidget>> importClassMap=new HashMap<String, Class<? extends Wiidget>>();;
 
-	List<String> importPackages;
+	List<String> importPackages = new ArrayList<String>();;
+
+	/**
+	 * Lang processor will act as this view.
+	 */
+	private final WiidgetView ownerView;
 
 	/**
 	 * Stores wiidget by names if name is defined.
 	 */
 	private final Map<String, Wiidget> wiidgetMap = new HashMap<>();
 
-	public WiidgetLangProcessor(final WiidgetFactory wiidgetFactory) {
+	public WiidgetLangProcessor() {
+		super();
+
+		this.ownerView = null;
+	}
+
+	/**
+	 * 
+	 * @param wiidgetFactory
+	 */
+	public WiidgetLangProcessor(WiidgetFactory wiidgetFactory) {
+		this(wiidgetFactory, null);
+	}
+
+	/**
+	 * 
+	 * @param wiidgetFactory
+	 * @param owner
+	 */
+	public WiidgetLangProcessor(final WiidgetFactory wiidgetFactory,
+			WiidgetView owner) {
 		super(wiidgetFactory);
 
-		this.importClassMap = new HashMap<String, Class<? extends Wiidget>>();
-		this.importPackages = new ArrayList<String>();
+		this.ownerView = owner == null ? this : owner;
+		
 
 		importDefaultClasses();
 	}
@@ -84,6 +109,11 @@ public class WiidgetLangProcessor extends WiidgetView {
 	@Override
 	public void run() {
 		// NO-OP
+	}
+
+	@Override
+	public WiidgetView getOwner() {
+		return ownerView == null ? super.getOwner() : ownerView;
 	}
 
 	/**

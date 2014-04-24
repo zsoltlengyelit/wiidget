@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+<<<<<<< HEAD
 	<classpathentry kind="src" path="src/main/webapp"/>
+=======
+	<classpathentry excluding="**/*.min.js" kind="src" path="src/main/webapp"/>
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 	<classpathentry kind="con" path="org.eclipse.wst.jsdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.wst.jsdt.launching.WebProject">
 		<attributes>

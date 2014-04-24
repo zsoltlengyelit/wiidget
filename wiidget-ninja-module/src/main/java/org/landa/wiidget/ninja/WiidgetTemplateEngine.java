@@ -24,7 +24,11 @@ import org.landa.wiidget.engine.DefaultWiidgetFactory;
 import org.landa.wiidget.engine.ObjectFactory;
 import org.landa.wiidget.engine.ResultTransformerRegistrator;
 import org.landa.wiidget.engine.WiidgetFactory;
+<<<<<<< HEAD
 import org.landa.wiidget.url.TransparentURLResolver;
+=======
+import org.landa.wiidget.url.URLResolver;
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 import org.landa.wiidget.util.DataMap;
 import org.landa.wiidget.util.WiidgetProperties;
 import org.landa.wiidget.validation.WiidgetValidator;
@@ -58,8 +62,8 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 			final TemplateEngineFreemarkerExceptionHandler templateEngineFreemarkerExceptionHandler,
 			final WiidgetTemplateEngineHelper templateEngineHelper,
 			final TemplateEngineManager templateEngineManager,
-			final WiidgetProperties properties, final Router router,
-			final Injector injector) {
+			final WiidgetProperties properties, final Injector injector) {
+
 
 		this.messages = messages;
 		this.lang = lang;
@@ -237,10 +241,18 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 				.getInstance(WiidgetProperties.class);
 		final WiidgetContext context = injector
 				.getInstance(WiidgetContext.class);
+<<<<<<< HEAD
 
 		// TODO change URL resolver
 		return new DefaultWiidgetFactory(objectFactory, validator,
 				wiidgetProperties, context, new ResultTransformerRegistrator(), new TransparentURLResolver());
+=======
+		final URLResolver urlResolver = injector.getInstance(URLResolver.class);
+
+		return new DefaultWiidgetFactory(objectFactory, validator,
+				wiidgetProperties, context, new ResultTransformerRegistrator(),
+				urlResolver);
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 	}
 
 	private WiidgetContext getWiidgetContext() {

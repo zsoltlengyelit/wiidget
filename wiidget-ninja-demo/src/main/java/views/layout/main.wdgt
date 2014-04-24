@@ -41,8 +41,7 @@ Template(value = "/views/layout/main.html", removePlaceholders = false){
 				Div(cssClass = "span8"){			
 					Placeholder("body");			
 				}
-			}
-		
+			}		
 		}
 		
 	}
