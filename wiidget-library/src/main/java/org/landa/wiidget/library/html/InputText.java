@@ -18,6 +18,11 @@ public class InputText extends HtmlTagWiidget {
 	@Attribute
 	private String type = "text";
 
+	@Override
+	public String getTagName() {
+		return "input";
+	}
+
 	public String getName() {
 		return name;
 	}

@@ -42,7 +42,7 @@ public class Form extends HtmlTagWiidget {
 	}
 
 	public void hello() {
-		write("Itt vagyok+");
+		write("Itt vagyok");
 	}
 
 	public Input input() {
@@ -51,7 +51,8 @@ public class Form extends HtmlTagWiidget {
 
 	public Table table() {
 
-		final Table table = this.getWiidgetFactory().createComponent(Table.class);
+		final Table table = this.getWiidgetFactory().createComponent(
+				Table.class);
 
 		return table;
 

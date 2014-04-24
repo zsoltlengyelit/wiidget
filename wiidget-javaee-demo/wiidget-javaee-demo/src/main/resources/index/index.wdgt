@@ -42,11 +42,10 @@ Template(value = "/layout/main.wdgt", removePlaceholders = true, messageVal = "F
 				Part("content"){
 					Out("Content2");
 				}
-			}
-			
+			}			
 		}
 	
-		$table : PageableDataTable(id="animals" + i, value=animals, cssClass="ui inverted red segment table"){
+		$table : PageableDataTable(id="animals" + i, value=animals, cssClass="ui segment table"){
 			
 			Column(field = "name", header = "Név");
 			Column(field = "age", header = "Kora");
@@ -55,6 +54,12 @@ Template(value = "/layout/main.wdgt", removePlaceholders = true, messageVal = "F
 		}
 		LinkPaginator(dataTable = $table, itemsPerPage = 5, cssClass="ui pagination menu");
 	
+		Div(cssClass="ui segment"){
+			
+			Link(href="add", value="Add", cssClass="ui button");
+			
+		}
+		
 		Paragraph{
 			Label(fafd ~ "Default value");		
 			Label(value = m["hello"], rendered = flash_error ~ true);

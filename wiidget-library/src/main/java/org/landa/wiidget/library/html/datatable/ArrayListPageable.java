@@ -21,6 +21,9 @@ public class ArrayListPageable<E> extends ArrayList<E> implements Pageable<E> {
 		final int fromItem = itemsPerPage * (currentPage - 1);
 		final int toItem = itemsPerPage * currentPage;
 
+		if (this.size() < toItem) {
+			return this;
+		}
 		return this.subList(fromItem, toItem);
 	}
 
