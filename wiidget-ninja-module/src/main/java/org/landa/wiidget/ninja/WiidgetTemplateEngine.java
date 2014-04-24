@@ -24,6 +24,7 @@ import org.landa.wiidget.engine.DefaultWiidgetFactory;
 import org.landa.wiidget.engine.ObjectFactory;
 import org.landa.wiidget.engine.ResultTransformerRegistrator;
 import org.landa.wiidget.engine.WiidgetFactory;
+import org.landa.wiidget.url.TransparentURLResolver;
 import org.landa.wiidget.util.DataMap;
 import org.landa.wiidget.util.WiidgetProperties;
 import org.landa.wiidget.validation.WiidgetValidator;
@@ -237,8 +238,9 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 		final WiidgetContext context = injector
 				.getInstance(WiidgetContext.class);
 
+		// TODO change URL resolver
 		return new DefaultWiidgetFactory(objectFactory, validator,
-				wiidgetProperties, context, new ResultTransformerRegistrator());
+				wiidgetProperties, context, new ResultTransformerRegistrator(), new TransparentURLResolver());
 	}
 
 	private WiidgetContext getWiidgetContext() {

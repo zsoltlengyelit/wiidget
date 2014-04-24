@@ -1,0 +1,56 @@
+
+import org.landa.wiidget.library.template.@;
+import org.landa.wiidget.library.html.@;
+import org.landa.wiidget.library.html.table.@;
+import org.landa.wiidget.library.html.datatable.@;
+import org.landa.wiidget.library.html.base.@;
+import wiidget.@;
+
+$factory : WiidgetFactory;
+$data : DataFactory;
+
+Template(value = "/views/layout/main.wdgt", removePlaceholders = true, messageVal = "From template"){
+	
+	SimplePart(name = "title", value = title);
+	
+	Part("body"){
+		
+		Out(messageVal);
+		
+//		seam($factory.table($data.getAnimals(), m["hello"] )){			
+//			Column(field = "name", header = "Név");
+//			Column(field = "age", header = "Kora");			
+//		}
+		
+		$table : PageableDataTable(id="animals1", value = $data.getPageable(), cssClass="table table-striped table-hover"){
+			
+			Header(colspan = 1){
+				Heading("Animals");
+			}
+			
+			Header(colspan = 1){
+				LinkPaginator($table);
+			}
+						
+			Column(field = "name", header = "Név");
+			Column(field = "age", header = "Kora");
+			
+			Footer{
+				LinkPaginator($table);
+			}
+		}
+		
+		$table : PageableDataTable(id="animals2", value = $data.getPageable(), cssClass="table table-striped table-hover"){
+			
+			Column(field = "name", header = "Név");
+			Column(field = "age", header = "Kora");
+			
+			LinkPaginator(dataTable = $table, itemsPerPage = 12);		
+		}		
+		
+		
+		Label(fafd ~ "fd");
+		
+		Label(value = m["hello"], rendered = flash_error ~ false);
+	}	
+}
