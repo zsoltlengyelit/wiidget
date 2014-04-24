@@ -2,9 +2,10 @@ package org.landa.wiidget.library.html.base;
 
 import org.landa.wiidget.Wiidget;
 import org.landa.wiidget.annotation.DefaultField;
+import org.landa.wiidget.library.BaseTagWiidget;
 import org.landa.wiidget.library.Tag;
 
-public class Heading extends Wiidget {
+public class Heading extends BaseTagWiidget {
 
 	@DefaultField
 	private String content;
