@@ -1,0 +1,24 @@
+import hu.landa.@;
+
+Div(cssClass = "container"){
+				
+	Div(cssClass = "row"){				
+		Div(cssClass = "span4"){					
+			Heading(content = "Menü", level = 2);
+		}
+	
+		Div(cssClass = "span8"){			
+			Placeholder("body");			
+		}
+		
+		foreach(key -> val : hell){
+			
+			Out(key);			
+		}
+		
+//		<param-tag>(class = "paragraph"){
+//			Out("Hello");
+//			
+//		}
+	}		
+}

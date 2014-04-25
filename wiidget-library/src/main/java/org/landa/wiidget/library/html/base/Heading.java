@@ -1,6 +1,8 @@
 package org.landa.wiidget.library.html.base;
 
 import org.landa.wiidget.annotation.DefaultField;
+import org.landa.wiidget.library.BaseTagWiidget;
+import org.landa.wiidget.library.Tag;
 import org.landa.wiidget.library.html.HtmlTagWiidget;
 
 /**
@@ -10,6 +12,7 @@ import org.landa.wiidget.library.html.HtmlTagWiidget;
  * 
  */
 public class Heading extends HtmlTagWiidget {
+
 
 	@DefaultField
 	private String content;

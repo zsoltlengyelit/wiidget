@@ -109,6 +109,8 @@ public class DefaultWiidgetFactory implements WiidgetFactory {
 
 		final W widget = createComponent(widgetClass, attributes);
 
+		// widget.setPrintStream(this.printStream);
+
 		addWiidget(widget, owner, putToStack);
 
 		widget.setOwner(owner);

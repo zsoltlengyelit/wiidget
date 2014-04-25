@@ -4,5 +4,7 @@ import java.util.Collection;
 
 public interface Pageable<E> extends Collection<E> {
 
-	public Collection<E> getItems(int currentPage, int itemsPerPage);
+	public Collection<E> getPage(int page);
+
+	public int getPageSize();
 }

@@ -46,5 +46,10 @@ public class InputText extends HtmlTagWiidget {
 	public void setType(final String type) {
 		this.type = type;
 	}
+	
+	@Override
+	public String getTagName() {
+		return "input";
+	}
 
 }

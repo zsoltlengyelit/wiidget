@@ -1,7 +1,6 @@
 package org.landa.wiidget.library.html.datatable;
 
 import org.landa.wiidget.annotation.DefaultField;
-import org.landa.wiidget.library.annotation.ContextVariable;
 import org.landa.wiidget.library.html.TemplatedHtmlWiidget;
 import org.landa.wiidget.validator.Required;
 
@@ -16,27 +15,20 @@ public class LinkPaginator extends TemplatedHtmlWiidget implements Paginator {
 	@DefaultField
 	private PageableDataTable dataTable;
 
-	@ContextVariable
 	private String cssClass = "pagination";
 
 	@Required
-	@ContextVariable
 	private String pageVar = "page";
 
-	@ContextVariable
 	private String listCssClass = "paginator-list";
 
-	@ContextVariable
 	private final String itemCssClass = "item";
 
-	@ContextVariable
 	private String prevPageLabel = "&laquo;";
 
-	@ContextVariable
 	private String nextPageLabel = "&raquo;";
 
 	@Required
-	@ContextVariable
 	private int itemsPerPage = 5;
 
 	public PageableDataTable getDataTable() {
@@ -48,7 +40,6 @@ public class LinkPaginator extends TemplatedHtmlWiidget implements Paginator {
 	}
 
 	@Override
-	@ContextVariable(name = "currentPage")
 	public int getCurrentPage() {
 		final String clientPageVar = getClientPageVar();
 
@@ -63,7 +54,6 @@ public class LinkPaginator extends TemplatedHtmlWiidget implements Paginator {
 	}
 
 	@Override
-	@ContextVariable(name = "pageCount")
 	public int getPageCount() {
 		final int listSize = getDataTable().getDataSize();
 
@@ -74,7 +64,6 @@ public class LinkPaginator extends TemplatedHtmlWiidget implements Paginator {
 		this.pageVar = pageVar;
 	}
 
-	@ContextVariable(name = "clientPageVar")
 	public String getClientPageVar() {
 		final String tableId = getDataTable().getId();
 		return tableId + "." + getPageVar();
@@ -84,9 +73,8 @@ public class LinkPaginator extends TemplatedHtmlWiidget implements Paginator {
 		return pageVar;
 	}
 
-	@Override
 	public int getItemsPerPage() {
-		return itemsPerPage;
+		return getDataTable().getPageable().getPageSize();
 	}
 
 	public void setItemsPerPage(final int itemsPerPage) {

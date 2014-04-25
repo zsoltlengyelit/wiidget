@@ -22,8 +22,7 @@ public class BufferedPrintStream {
 	 * @param out
 	 */
 	public BufferedPrintStream() {
-		final StringBuilder stringBuilder = new StringBuilder();
-		outputStreams.push(stringBuilder);
+		startBuffer();
 	}
 
 	public void startBuffer() {

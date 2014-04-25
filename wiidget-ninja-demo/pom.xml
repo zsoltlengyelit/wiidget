@@ -27,7 +27,7 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
-			</plugin>			
+			</plugin>
 
 		</plugins>
 
@@ -66,12 +66,13 @@
 			<version>1.6.0-rc1</version>
 			<scope>test</scope>
 		</dependency>
-		
-		 <dependency>
-         <groupId>landa</groupId>
-         <artifactId>wiidget-library</artifactId>
-         <version>0.0.1-SNAPSHOT</version>         
-      </dependency>
+
+		<dependency>
+			<groupId>landa</groupId>
+			<artifactId>wiidget-library</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>landa</groupId>

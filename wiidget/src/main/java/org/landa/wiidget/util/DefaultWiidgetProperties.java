@@ -12,8 +12,9 @@ public class DefaultWiidgetProperties implements WiidgetProperties {
 
 		final Map<String, Object> defaultConfig = new HashMap<String, Object>();
 
+		defaultConfig.put(FORMAT_OUTPUT, false);
+		defaultConfig.put(FORMAT_INDENTATION, 4);
 		defaultConfig.put(WIIDGET_FILE_EXTENSION, ".wdgt");
-		defaultConfig.put(WIIDGET_DEBUG_MODE, false);
 
 		DEFAULTS = Collections.unmodifiableMap(defaultConfig);
 

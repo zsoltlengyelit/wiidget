@@ -9,9 +9,7 @@ Template(value = "/views/layout/main.html", removePlaceholders = false){
 		
 		CssFile("assets/css/bootstrap.css");
 		CssFile("assets/css/style.css");
-		JavaScriptFile("http://code.jquery.com/jquery-1.10.2.min.js");
 		JavaScriptFile("assets/js/bootstrap.min.js");
-
 	
 		// navbar container
 		Div(cssClass = "container"){
@@ -43,8 +41,7 @@ Template(value = "/views/layout/main.html", removePlaceholders = false){
 				Div(cssClass = "span8"){			
 					Placeholder("body");			
 				}
-			}
-		
+			}		
 		}
 		
 	}

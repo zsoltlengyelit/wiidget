@@ -1,7 +1,6 @@
 package org.landa.wiidget.library.html;
 
 import org.landa.wiidget.Wiidget;
-import org.landa.wiidget.validator.Required;
 
 /**
  * Simple value output.
@@ -10,7 +9,10 @@ import org.landa.wiidget.validator.Required;
  */
 public class Out extends Wiidget {
 
-	@Required
+
+	/**
+	 * Value to write to output.
+	 */
 	private String value;
 
 	@Override

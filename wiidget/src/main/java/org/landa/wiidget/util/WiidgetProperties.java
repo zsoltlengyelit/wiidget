@@ -13,8 +13,6 @@ public interface WiidgetProperties {
 
 	public static final String WIIDGET_FILE_EXTENSION = "wiidget.file_extension";
 
-	public static final String WIIDGET_DEBUG_MODE = "wiidget.debug";
-
 	public boolean getBoolean(final String key);
 
 	public Object get(final String key);

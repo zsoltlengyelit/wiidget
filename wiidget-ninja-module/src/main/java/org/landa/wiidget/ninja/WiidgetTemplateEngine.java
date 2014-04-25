@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import ninja.Context;
 import ninja.Result;
+import ninja.Router;
 import ninja.i18n.Lang;
 import ninja.i18n.Messages;
 import ninja.template.TemplateEngine;
@@ -23,7 +24,11 @@ import org.landa.wiidget.engine.DefaultWiidgetFactory;
 import org.landa.wiidget.engine.ObjectFactory;
 import org.landa.wiidget.engine.ResultTransformerRegistrator;
 import org.landa.wiidget.engine.WiidgetFactory;
+<<<<<<< HEAD
+import org.landa.wiidget.url.TransparentURLResolver;
+=======
 import org.landa.wiidget.url.URLResolver;
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 import org.landa.wiidget.util.DataMap;
 import org.landa.wiidget.util.WiidgetProperties;
 import org.landa.wiidget.validation.WiidgetValidator;
@@ -47,6 +52,8 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 
 	private final Injector injector;
 
+	private final Router router;
+
 	@Inject
 	public WiidgetTemplateEngine(
 			final Messages messages,
@@ -57,11 +64,13 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 			final TemplateEngineManager templateEngineManager,
 			final WiidgetProperties properties, final Injector injector) {
 
+
 		this.messages = messages;
 		this.lang = lang;
 		this.logger = logger;
 		this.templateEngineHelper = templateEngineHelper;
 		this.properties = properties;
+		this.router = router;
 		this.injector = injector;
 
 	}
@@ -173,6 +182,8 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 		map.put("m", new WiidgetMessages(messages, context));
 		map.put("wiidgetContext", this.getWiidgetContext());
 
+		map.put("router", router);
+
 		// end of collect data
 		this.getWiidgetContext().setAll(map); // set to context
 
@@ -230,11 +241,18 @@ public class WiidgetTemplateEngine implements TemplateEngine {
 				.getInstance(WiidgetProperties.class);
 		final WiidgetContext context = injector
 				.getInstance(WiidgetContext.class);
+<<<<<<< HEAD
+
+		// TODO change URL resolver
+		return new DefaultWiidgetFactory(objectFactory, validator,
+				wiidgetProperties, context, new ResultTransformerRegistrator(), new TransparentURLResolver());
+=======
 		final URLResolver urlResolver = injector.getInstance(URLResolver.class);
 
 		return new DefaultWiidgetFactory(objectFactory, validator,
 				wiidgetProperties, context, new ResultTransformerRegistrator(),
 				urlResolver);
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 	}
 
 	private WiidgetContext getWiidgetContext() {

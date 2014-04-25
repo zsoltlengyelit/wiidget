@@ -4,6 +4,7 @@
 package org.landa.wiidget.library.html;
 
 import org.landa.wiidget.annotation.Attribute;
+import org.landa.wiidget.library.html.table.Table;
 
 /**
  * @author Zsolti

@@ -5,10 +5,16 @@ import org.landa.wiidget.library.html.table.@;
 import org.landa.wiidget.library.html.datatable.@;
 import org.landa.wiidget.library.html.base.@;
 import org.landa.wiidget.library.util.@;
+<<<<<<< HEAD
+
+
+$loopHelper : LoopHelper;
+=======
 import wiidget.@;
 
 
 $loops : Loops;
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 
 Template(value = "/layout/main.wdgt", removePlaceholders = true, messageVal = "From template"){
 	
@@ -16,14 +22,37 @@ Template(value = "/layout/main.wdgt", removePlaceholders = true, messageVal = "F
 	
 	Part("body"){
 		
+<<<<<<< HEAD
+		Out(messageVal);
+=======
 		Div{
 			Out(messageVal);
 		}
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 		
 //		seam($factory.table($data.getAnimals(), m["hello"] )){			
 //			Column(field = "name", header = "Név");
 //			Column(field = "age", header = "Kora");			
 //		}
+<<<<<<< HEAD
+	
+		foreach(i : $loopHelper.loop(1, 3, 1)){
+			
+			$table : PageableDataTable(id="animals" + i, value = animals, cssClass="table table-striped table-hover"){
+				
+				Column(field = "name", header = "Név");
+				Column(field = "age", header = "Kora");
+				
+				LinkPaginator(dataTable = $table, itemsPerPage = 12);		
+			}
+			LinkPaginator(dataTable = $table, itemsPerPage = 12);
+			
+		}
+		
+		Label(fafd ~ "Default value");
+		
+		Label(value = m["hello"], rendered = flash_error ~ true);
+=======
 		
 		Accordion{
 			
@@ -64,5 +93,6 @@ Template(value = "/layout/main.wdgt", removePlaceholders = true, messageVal = "F
 			Label(fafd ~ "Default value");		
 			Label(value = m["hello"], rendered = flash_error ~ true);
 		}
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 	}	
 }

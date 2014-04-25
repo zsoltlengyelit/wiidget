@@ -4,14 +4,24 @@ import org.landa.wiidget.context.WiidgetContext;
 import org.landa.wiidget.engine.WiidgetFactory;
 import org.landa.wiidget.io.BufferedPrintStream;
 
+
+
 public abstract class WiidgetView extends Wiidget {
 
-	private final BufferedPrintStream printStream;
+	private BufferedPrintStream printStream;
 
-	protected WiidgetFactory widgetFactory;
+	private WiidgetFactory widgetFactory;
+	
+	public WiidgetView() {
+		this.printStream = new BufferedPrintStream();
+	}
 
 	public WiidgetView(final WiidgetFactory wiidgetFactory) {
-		this.widgetFactory = wiidgetFactory;
+		this();
+		this.widgetFactory = wiidgetFactory;	
+	}
+	
+	public void clearPrintStream(){
 		this.printStream = new BufferedPrintStream();
 	}
 

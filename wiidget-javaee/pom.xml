@@ -35,8 +35,13 @@
 			<artifactId>cdi-api</artifactId>
 			<version>1.1</version>
 		</dependency>
+<<<<<<< HEAD
 		
 				<dependency>
+=======
+
+		<dependency>
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
 			<version>2.3.6.Final</version>
@@ -57,7 +62,30 @@
 			<artifactId>javaee-api</artifactId>
 			<version>6.0</version>
 		</dependency>
+<<<<<<< HEAD
 		
+=======
+		<dependency>
+			<groupId>landa</groupId>
+			<artifactId>wiidget-library</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.weld</groupId>
+			<artifactId>weld-api</artifactId>
+			<version>2.1.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.weld</groupId>
+			<artifactId>weld-core</artifactId>
+			<version>2.1.0.Final</version>
+		</dependency>
+
+
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 
 	</dependencies>
 

@@ -234,6 +234,7 @@ public abstract class Wiidget {
 
 		try {
 
+
 			final InputStream file = getClass().getResourceAsStream(path);
 
 			if (file == null) {

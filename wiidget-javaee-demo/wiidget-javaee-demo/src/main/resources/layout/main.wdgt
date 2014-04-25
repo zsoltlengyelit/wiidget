@@ -7,6 +7,44 @@ Template(value = "/layout/main.html", removePlaceholders = false){
 
 	Part("body"){
 		
+<<<<<<< HEAD
+		CssFile("../assets/css/bootstrap.css");
+		CssFile("../assets/css/style.css");
+		JavaScriptFile("../assets/js/bootstrap.min.js");
+	
+		// navbar container
+		Div(cssClass = "container"){
+			
+			Div(cssClass = "navbar"){
+				Div(cssClass = "navbar-inner"){
+					
+					Link(value = "Wiidget demo", href="#", cssClass="brand");
+					
+					Ul(cssClass = "nav"){
+						Li(cssClass = "active"){
+							Link(href="#", value="Home");
+						}
+						Li{
+							Link(href="#", value="Base wiidgets");
+						}
+					}
+				}
+			}	
+		}
+		
+		Div(cssClass = "container"){
+			
+			Div(cssClass = "row"){				
+				Div(cssClass = "span4"){					
+					Heading(content = "Menü", level = 2);
+				}
+				
+				Div(cssClass = "span8"){			
+					Placeholder("body");			
+				}
+			}
+		
+=======
 		CssFile("../assets/css/semantic.css");
 		CssFile("../assets/css/style.css");
 		
@@ -30,6 +68,7 @@ Template(value = "/layout/main.html", removePlaceholders = false){
 			Div(cssClass = "span8"){			
 				Placeholder("body");			
 			}
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 		}
 		
 	}

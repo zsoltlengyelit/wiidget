@@ -4,4 +4,12 @@
       <attribute name="provider-id" value="jaxrs-no-op-library-provider"/>
     </node>
   </facet>
+<<<<<<< HEAD
+=======
+  <facet id="jst.jsf">
+    <node name="libprov">
+      <attribute name="provider-id" value="jsf-no-op-library-provider"/>
+    </node>
+  </facet>
+>>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 </root>
