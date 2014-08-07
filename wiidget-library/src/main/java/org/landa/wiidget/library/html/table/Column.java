@@ -1,9 +1,9 @@
 package org.landa.wiidget.library.html.table;
 
+import org.landa.wiidget.Tag;
 import org.landa.wiidget.Wiidget;
 import org.landa.wiidget.WiidgetException;
 import org.landa.wiidget.annotation.DefaultField;
-import org.landa.wiidget.library.Tag;
 import org.landa.wiidget.library.format.Formatter;
 import org.landa.wiidget.reflect.Reflection;
 

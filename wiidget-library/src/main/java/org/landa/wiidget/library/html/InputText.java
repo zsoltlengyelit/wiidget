@@ -4,7 +4,7 @@ import org.landa.wiidget.annotation.Attribute;
 
 /**
  * Input text HTML field.
- * 
+ *
  * @author Zsolt Lengyel (zsolt.lengyel.it@gmail.com)
  */
 public class InputText extends HtmlTagWiidget {
@@ -17,11 +17,6 @@ public class InputText extends HtmlTagWiidget {
 
 	@Attribute
 	private String type = "text";
-
-	@Override
-	public String getTagName() {
-		return "input";
-	}
 
 	public String getName() {
 		return name;
@@ -46,7 +41,7 @@ public class InputText extends HtmlTagWiidget {
 	public void setType(final String type) {
 		this.type = type;
 	}
-	
+
 	@Override
 	public String getTagName() {
 		return "input";

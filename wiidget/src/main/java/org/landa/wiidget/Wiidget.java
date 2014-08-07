@@ -10,11 +10,14 @@ import org.landa.wiidget.io.BufferedPrintStream;
 import org.landa.wiidget.util.DataMap;
 
 /**
- * 
+ *
  * @author Zsolt Lengyel (zsolt.lengyel.it@gmail.com)
- * 
+ *
  */
 public abstract class Wiidget {
+
+	/** Empty data map. */
+	public static final DataMap EMPTY_DATA = new DataMap();
 
 	/**
 	 * Unique ID of wiidget.
@@ -39,7 +42,7 @@ public abstract class Wiidget {
 	/**
 	 * This method is called, when the lang processor did not find the field in
 	 * the class.
-	 * 
+	 *
 	 * @param name
 	 *            name of the field
 	 * @param value
@@ -62,13 +65,11 @@ public abstract class Wiidget {
 	}
 
 	protected <W extends Wiidget> W wiidget(final Class<W> widgetClass) {
-		return wiidget(widgetClass, new DataMap());
+		return wiidget(widgetClass, EMPTY_DATA);
 	}
 
-	protected <W extends Wiidget> W wiidget(final Class<W> widgetClass,
-			final DataMap dataMap) {
-		final W widget = getWiidgetFactory().createWiidget(getOwner(),
-				widgetClass, dataMap, false);
+	protected <W extends Wiidget> W wiidget(final Class<W> widgetClass, final DataMap dataMap) {
+		final W widget = getWiidgetFactory().createWiidget(getOwner(), widgetClass, dataMap, false);
 
 		if (widget.isRendered()) {
 			widget.init();
@@ -86,12 +87,23 @@ public abstract class Wiidget {
 		return beginWiidget(widgetClass, new DataMap());
 	}
 
-	protected <W extends Wiidget> W beginWiidget(final Class<W> widgetClass,
-			final DataMap dataMap) {
-		final W widget = getWiidgetFactory().createWiidget(getOwner(),
-				widgetClass, dataMap, true);
+	protected <W extends Wiidget> W beginWiidget(final Class<W> widgetClass, final DataMap dataMap) {
+		final W widget = getWiidgetFactory().createWiidget(getOwner(), widgetClass, dataMap, true);
 
 		if (widget.isRendered()) {
+			widget.init();
+
+			return widget;
+		}
+		// the wiidget is not rendered
+		return null;
+	}
+
+	protected ResourceWiidget beginResourceWiidget(final String wiidgetName) {
+		final ResourceWiidget widget = getWiidgetFactory().createWiidget(getOwner(), ResourceWiidget.class, EMPTY_DATA, true);
+		widget.setFileName(wiidgetName);
+		if (widget.isRendered()) {
+
 			widget.init();
 
 			return widget;
@@ -121,8 +133,7 @@ public abstract class Wiidget {
 		}
 
 		if (widget != popedWidget) {
-			throw new WiidgetException(
-					"Run specified widget failed. Maybe there is another unclosed widget.");
+			throw new WiidgetException("Run specified widget failed. Maybe there is another unclosed widget.");
 		}
 
 		if (widget.isRendered()) {
@@ -137,8 +148,7 @@ public abstract class Wiidget {
 		final Wiidget widget = getWiidgetFactory().getWiidgetStack().pop();
 
 		if (!widgetClass.isAssignableFrom(widget.getClass())) {
-			throw new WiidgetException(
-					"Run specified widget failed. Maybe there is another unclosed widget.");
+			throw new WiidgetException("Run specified widget failed. Maybe there is another unclosed widget.");
 		}
 
 		if (widget.isRendered()) {
@@ -194,9 +204,7 @@ public abstract class Wiidget {
 		final List<W> children = getChildren(wiidgetClass);
 
 		if (children.size() > 1) {
-			throw new WiidgetException(
-					"The wiidget has more than one children with type: "
-							+ wiidgetClass.getCanonicalName());
+			throw new WiidgetException("The wiidget has more than one children with type: " + wiidgetClass.getCanonicalName());
 		}
 
 		if (children.isEmpty()) {
@@ -221,7 +229,7 @@ public abstract class Wiidget {
 
 	/**
 	 * Returns the content of the specified file.
-	 * 
+	 *
 	 * @param path
 	 * @return
 	 */
@@ -233,7 +241,6 @@ public abstract class Wiidget {
 		String content = "";
 
 		try {
-
 
 			final InputStream file = getClass().getResourceAsStream(path);
 
@@ -251,11 +258,9 @@ public abstract class Wiidget {
 		return content;
 	}
 
-	private static String readFile(final InputStream inputStream)
-			throws IOException {
+	private static String readFile(final InputStream inputStream) throws IOException {
 		@SuppressWarnings("resource")
-		final java.util.Scanner s = new java.util.Scanner(inputStream)
-				.useDelimiter("\\A");
+		final java.util.Scanner s = new java.util.Scanner(inputStream).useDelimiter("\\A");
 		return s.hasNext() ? s.next() : "";
 	}
 

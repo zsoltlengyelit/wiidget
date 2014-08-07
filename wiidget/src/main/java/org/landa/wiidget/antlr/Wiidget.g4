@@ -32,7 +32,7 @@ foreachControl
     ;
 
 foreachVariable
-    : Identifier (ARROW Identifier)?
+    : (Identifier ARROW)? Identifier
     ;      
 
 wiidgetDeclaration
@@ -48,7 +48,13 @@ wiidgetVariable
     ;
 
 wiidgetName
-    : qualifiedName
+    : expressionWiidgetName
+    | Identifier
+    | StringLiteral    
+    ;
+
+expressionWiidgetName:
+    '`' expression '`'
     ;
 
 wiidgetMethodCallExpression
@@ -82,10 +88,8 @@ elementValueArrayInitializer
     ;
 
 importDeclaration
-    :   IMPORT qualifiedName JokerImport? ';'
+    :   IMPORT qualifiedName ('as' Identifier)? ';'
     ;
-
-JokerImport: '.' '@' ;
 
 wiidgetBody
     :   ';'

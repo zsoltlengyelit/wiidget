@@ -1,6 +1,8 @@
-import hu.landa.@;
+import hu.landa.Div;
 
 Div(cssClass = "container"){
+			
+				
 				
 	Div(cssClass = "row"){				
 		Div(cssClass = "span4"){					
@@ -15,6 +17,8 @@ Div(cssClass = "container"){
 			
 			Out(key);			
 		}
+		
+		"string";
 		
 //		<param-tag>(class = "paragraph"){
 //			Out("Hello");

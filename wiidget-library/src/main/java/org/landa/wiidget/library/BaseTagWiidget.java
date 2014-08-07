@@ -3,6 +3,7 @@ package org.landa.wiidget.library;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.landa.wiidget.Tag;
 import org.landa.wiidget.Wiidget;
 import org.landa.wiidget.annotation.Attribute;
 import org.landa.wiidget.reflect.AnnotatedAccessor;

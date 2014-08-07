@@ -3,7 +3,7 @@ package org.landa.wiidget.library.html.table;
 import java.util.Collection;
 import java.util.List;
 
-import org.landa.wiidget.library.Tag;
+import org.landa.wiidget.Tag;
 import org.landa.wiidget.library.html.HtmlTagWiidget;
 import org.landa.wiidget.validator.Required;
 

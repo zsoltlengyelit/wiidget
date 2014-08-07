@@ -2,9 +2,9 @@ package org.landa.wiidget.library.html;
 
 import java.util.Map.Entry;
 
+import org.landa.wiidget.Tag;
 import org.landa.wiidget.annotation.Attribute;
 import org.landa.wiidget.library.BaseTagWiidget;
-import org.landa.wiidget.library.Tag;
 import org.landa.wiidget.util.DataMap;
 
 /**

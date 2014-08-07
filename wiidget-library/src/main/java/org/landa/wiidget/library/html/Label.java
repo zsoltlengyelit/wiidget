@@ -3,8 +3,8 @@
  */
 package org.landa.wiidget.library.html;
 
+import org.landa.wiidget.Tag;
 import org.landa.wiidget.Wiidget;
-import org.landa.wiidget.library.Tag;
 
 /**
  * @author Zsolti

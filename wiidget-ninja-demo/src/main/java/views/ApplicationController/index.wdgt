@@ -1,5 +1,7 @@
 
-import org.landa.wiidget.library.template.@;
+import org.landa.wiidget.library.template.Template as Template;
+import org.landa.wiidget.library.template.Part;
+import org.landa.wiidget.library.template.SimplePart;
 import org.landa.wiidget.library.html.@;
 import org.landa.wiidget.library.html.table.@;
 import org.landa.wiidget.library.html.datatable.@;
@@ -14,7 +16,7 @@ Template(value = "/views/layout/main.wdgt", removePlaceholders = true, messageVa
 	SimplePart(name = "title", value = title);
 	
 	Part("body"){
-		
+			
 		Out(messageVal);
 		
 		table();

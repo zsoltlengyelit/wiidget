@@ -1,4 +1,4 @@
-package org.landa.wiidget.library;
+package org.landa.wiidget;
 
 import java.io.Serializable;
 import java.util.ArrayList;
