@@ -19,168 +19,170 @@ import org.landa.wiidget.parser.WiidgetParserException;
  */
 public final class Renderer {
 
-	/**
-	 * The factory for createing / validating wiidgets.
-	 */
-	private final WiidgetFactory wiidgetFactory;
+    /**
+     * The factory for createing / validating wiidgets.
+     */
+    private final WiidgetFactory wiidgetFactory;
 
-	/**
-	 * @param wiidgetFactory
-	 *            factory
-	 */
-	private Renderer(final WiidgetFactory wiidgetFactory) {
-		this.wiidgetFactory = wiidgetFactory;
-	}
+    /**
+     * @param wiidgetFactory
+     *            factory
+     */
+    private Renderer(final WiidgetFactory wiidgetFactory) {
+        this.wiidgetFactory = wiidgetFactory;
+    }
 
-	/**
-	 * @param data
-	 * @return
-	 */
-	public static Renderer create(final Map<String, Object> data) {
+    /**
+     * @param data
+     * @return
+     */
+    public static Renderer create(final Map<String, Object> data) {
 
-		final WiidgetContext wiidgetContext = new DefaultWiidgetContext(data);
-		final WiidgetFactory wiidgetFactory = new DefaultWiidgetFactory(wiidgetContext);
+        final WiidgetContext wiidgetContext = new DefaultWiidgetContext(data);
+        final WiidgetFactory wiidgetFactory = new DefaultWiidgetFactory(wiidgetContext);
 
-		return create(wiidgetFactory);
-	}
+        return create(wiidgetFactory);
+    }
 
-	/**
-	 * 
-	 */
-	public static Renderer create() {
-		return create(new DefaultWiidgetFactory());
-	}
+    /**
+     *
+     */
+    public static Renderer create() {
+        return create(new DefaultWiidgetFactory());
+    }
 
-	/**
-	 * @param wiidgetFactory
-	 * @return
-	 */
-	public static Renderer create(final WiidgetFactory wiidgetFactory) {
-		return new Renderer(wiidgetFactory);
-	}
+    /**
+     * @param wiidgetFactory
+     * @return
+     */
+    public static Renderer create(final WiidgetFactory wiidgetFactory) {
+        return new Renderer(wiidgetFactory);
+    }
 
-	public WiidgetFactory getWiidgetFactory() {
-		return wiidgetFactory;
-	}
+    public WiidgetFactory getWiidgetFactory() {
+        return wiidgetFactory;
+    }
 
-	/**
-	 * Renders file.
-	 * 
-	 * @param path
-	 * @return
-	 */
-	public String renderFile(final String path) {
+    /**
+     * Renders file.
+     *
+     * @param path
+     * @return
+     */
+    public String renderFile(final String path) {
 
-		try {
-			final FileInputStream inputStream = new FileInputStream(path);
+        try {
+            final FileInputStream inputStream = new FileInputStream(path);
 
-			return render(inputStream);
+            return render(inputStream);
 
-		} catch (final FileNotFoundException e) {
-			throw new WiidgetException("Cannot found file: " + path, e);
-		}
+        } catch (final FileNotFoundException e) {
+            throw new WiidgetException("Cannot found file: " + path, e);
+        } catch (final WiidgetException e) {
+            throw e;
+        }
 
-	}
+    }
 
-	/**
-	 * @param template
-	 * @return
-	 */
-	public String render(final String template) {
+    /**
+     * @param template
+     * @return
+     */
+    public String render(final String template) {
 
-		final String result = renderWithoutResources(template);
+        final String result = renderWithoutResources(template);
 
-		return transform(result);
+        return transform(result);
 
-	}
+    }
 
-	/**
-	 * @param inputStream
-	 * @return
-	 */
-	public String render(final InputStream inputStream) {
+    /**
+     * @param inputStream
+     * @return
+     */
+    public String render(final InputStream inputStream) {
 
-		final WiidgetLangProcessor langProcessor = new WiidgetLangProcessor(wiidgetFactory);
+        final WiidgetLangProcessor langProcessor = new WiidgetLangProcessor(wiidgetFactory);
 
-		try {
+        try {
 
-			final String result = langProcessor.render(inputStream);
+            final String result = langProcessor.render(inputStream);
 
-			return transform(result);
+            return transform(result);
 
-		} catch (final WiidgetParserException exception) {
-			throw new WiidgetException("Template render failed.", exception);
-		}
+        } catch (final WiidgetParserException exception) {
+            throw new WiidgetException("Template render failed.", exception);
+        }
 
-	}
+    }
 
-	/**
-	 * @param wiidgetView
-	 * @return
-	 */
-	public String render(final WiidgetView wiidgetView) {
+    /**
+     * @param wiidgetView
+     * @return
+     */
+    public String render(final WiidgetView wiidgetView) {
 
-		wiidgetView.init();
-		wiidgetView.run();
+        wiidgetView.init();
+        wiidgetView.run();
 
-		final String result = wiidgetView.render();
+        final String result = wiidgetView.render();
 
-		return transform(result);
-	}
+        return transform(result);
+    }
 
-	/**
-	 * @param result
-	 * @return
-	 */
-	private String transform(final String result) {
+    /**
+     * @param result
+     * @return
+     */
+    private String transform(final String result) {
 
-		final String resourcePlace = placeResources(result);
+        final String resourcePlace = placeResources(result);
 
-		final String transformed = getWiidgetFactory().getResutlTransformerRegistrator().transform(resourcePlace);
+        final String transformed = getWiidgetFactory().getResutlTransformerRegistrator().transform(resourcePlace);
 
-		return transformed;
-	}
+        return transformed;
+    }
 
-	/**
-	 * Without placing resources.
-	 * 
-	 * @param template
-	 * @return
-	 */
-	public String renderWithoutResources(final String template) {
-		final WiidgetLangProcessor langProcessor = new WiidgetLangProcessor(wiidgetFactory);
+    /**
+     * Without placing resources.
+     *
+     * @param template
+     * @return
+     */
+    public String renderWithoutResources(final String template) {
+        final WiidgetLangProcessor langProcessor = new WiidgetLangProcessor(wiidgetFactory);
 
-		try {
+        try {
 
-			final String result = langProcessor.render(template);
+            final String result = langProcessor.render(template);
 
-			return result;
+            return result;
 
-		} catch (final WiidgetParserException e) {
-			throw new WiidgetException("Template render failed.", e);
-		}
+        } catch (final WiidgetParserException e) {
+            throw new WiidgetException("Template render failed.", e);
+        }
 
-	}
+    }
 
-	/**
-	 * @param result
-	 * @return
-	 */
-	private String placeResources(final String result) {
+    /**
+     * @param result
+     * @return
+     */
+    private String placeResources(final String result) {
 
-		String resourcePlace = result;
+        String resourcePlace = result;
 
-		for (final ResourceLink resourceLink : getWiidgetFactory().getResourceLinks()) {
+        for (final ResourceLink resourceLink : getWiidgetFactory().getResourceLinks()) {
 
-			final Position position = resourceLink.getPosition();
-			if (null == position) {
-				throw new WiidgetException("Resource (" + resourceLink.getSource() + ") has null position.");
-			}
+            final Position position = resourceLink.getPosition();
+            if (null == position) {
+                throw new WiidgetException("Resource (" + resourceLink.getSource() + ") has null position.");
+            }
 
-			final String link = resourceLink.getTemplate();
+            final String link = resourceLink.getTemplate();
 
-			resourcePlace = position.place(resourcePlace, link);
-		}
-		return resourcePlace;
-	}
+            resourcePlace = position.place(resourcePlace, link);
+        }
+        return resourcePlace;
+    }
 }

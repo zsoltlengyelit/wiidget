@@ -1,10 +1,27 @@
 
-import org.landa.wiidget.library.template.@;
-import org.landa.wiidget.library.html.@;
-import org.landa.wiidget.library.html.datatable.@;
-import org.landa.wiidget.library.html.base.@;
-import wiidget.@;
-import org.landa.wiidget.library.util.@;
+import org.landa.wiidget.library.template.Template;
+import org.landa.wiidget.library.template.Part;
+import org.landa.wiidget.library.template.SimplePart;
+import org.landa.wiidget.library.template.Placeholder;
+
+import org.landa.wiidget.library.html.Out;
+import org.landa.wiidget.library.html.Label;
+import org.landa.wiidget.library.html.CssFile;
+import org.landa.wiidget.library.html.JavaScriptFile;
+
+
+import org.landa.wiidget.library.html.base.Div;
+import org.landa.wiidget.library.html.base.Ul;
+import org.landa.wiidget.library.html.base.Li;
+import org.landa.wiidget.library.html.base.Link;
+import org.landa.wiidget.library.html.base.Heading;
+
+import org.landa.wiidget.library.html.datatable.PageableDataTable;
+
+import org.landa.wiidget.library.html.datatable.LinkPaginator;
+
+import org.landa.wiidget.library.html.table.Column;
+import org.landa.wiidget.library.util.LoopHelper;
 
 
 $loopHelper : LoopHelper;
@@ -15,15 +32,9 @@ Div(id = this.id, cssClass = this.cssClass){
 	Ul(cssClass = this.listCssClass){
 		
 		// prev page
-<<<<<<< HEAD
 		Li(cssClass = this.currentPage == 1 ? "disabled" : ""){
 			Link(rendered = this.currentPage != 1, href = ("?" + this.clientPageVar + "=" + (this.currentPage - 1))){
 				Out(this.prevPageLabel);
-=======
-		Li(cssClass = (currentPage == 1 ? "disabled" : "") + itemCssClass){
-			Link(rendered = currentPage != 1, href = ("?" + clientPageVar + "=" + (currentPage - 1))){
-				Out(prevPageLabel);
->>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 			}
 			
 			Link(rendered = (this.currentPage <= 1), href = "#"){
@@ -34,28 +45,17 @@ Div(id = this.id, cssClass = this.cssClass){
 		// inner pages
 		foreach(page : $loopHelper.loop(1, this.pageCount, 1)){
 			
-<<<<<<< HEAD
 			Li(cssClass = page == this.currentPage ? "active" : ""){
 				Link(href = ("?" + this.clientPageVar + "=" + page)){
-=======
-			Li(cssClass = (page == currentPage ? "active" : "") + itemCssClass){
-				Link(href = ("?" + clientPageVar + "=" + page)){
->>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 					Out(page);
 				}
 			}			
 		}
 		
 		// next page
-<<<<<<< HEAD
 		Li(cssClass = this.currentPage == this.pageCount ? "disabled" : ""){
 			Link(rendered = this.currentPage < this.pageCount, href = ("?" + this.clientPageVar + "=" + (this.currentPage + 1))){
 				Out(this.nextPageLabel);
-=======
-		Li(cssClass = (currentPage == pageCount ? "disabled" : "") + itemCssClass){
-			Link(rendered = currentPage < pageCount, href = ("?" + clientPageVar + "=" + (currentPage + 1))){
-				Out(nextPageLabel);
->>>>>>> 612cb241b590b46a7445cfe51be64ae1d527fe6d
 			}
 			
 			Link(rendered = (this.currentPage == this.pageCount), href = ""){

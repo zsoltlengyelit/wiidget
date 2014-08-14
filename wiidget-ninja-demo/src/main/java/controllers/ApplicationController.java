@@ -43,121 +43,117 @@ import com.google.inject.Singleton;
 @Singleton
 public class ApplicationController {
 
-	/**
-	 * This is the system wide logger. You can still use any config you like. Or
-	 * create your own custom logger. But often this is just a simple solution:
-	 */
-	@Inject
-	Logger logger;
+    /**
+     * This is the system wide logger. You can still use any config you like. Or create your own custom logger. But often this is just a simple solution:
+     */
+    @Inject
+    Logger logger;
 
-	@Inject
-	Lang lang;
+    @Inject
+    Lang lang;
 
-	public Result examples(final Context context) {
-		logger.info("In example ");
-		// Default rendering is simple by convention
-		// This renders the page in views/ApplicationController/index.ftl.html
-		return Results.html();
+    public Result examples(final Context context) {
+        logger.info("In example ");
+        // Default rendering is simple by convention
+        // This renders the page in views/ApplicationController/index.ftl.html
+        return Results.html();
 
-	}
+    }
 
-	public Result testPage() {
-		return Results.html();
+    public Result testPage() {
+        return Results.html();
 
-	}
+    }
 
-	public Result index(final Context context) {
-		// Default rendering is simple by convention
-		// This renders the page in views/ApplicationController/index.ftl.html
+    public Result index(final Context context) {
+        // Default rendering is simple by convention
+        // This renders the page in views/ApplicationController/index.ftl.html
 
-		final List<Person> persons = new ArrayList<>();
-		persons.add(new Person("John", "+36 20 539 5847"));
-		persons.add(new Person("Smith", "+36 30 533 3327"));
-		persons.add(new Person("Jane", "+36 30 533 3327"));
-		persons.add(new Person("Bull", "+36 30 533 3327"));
-		persons.add(new Person("Ken", "+36 30 533 3327"));
-		persons.add(new Person("Mule", "+36 30 533 3327"));
+        final List<Person> persons = new ArrayList<>();
+        persons.add(new Person("John", "+36 20 539 5847"));
+        persons.add(new Person("Smith", "+36 30 533 3327"));
+        persons.add(new Person("Jane", "+36 30 533 3327"));
+        persons.add(new Person("Bull", "+36 30 533 3327"));
+        persons.add(new Person("Ken", "+36 30 533 3327"));
+        persons.add(new Person("Mule", "+36 30 533 3327"));
 
-		final Formatter<String> formatter = new StringFormatter();
+        final Formatter<String> formatter = new StringFormatter();
 
-		final Formatter<Integer> integerFormatter = new IntegerFormatter();
+        final Formatter<Integer> integerFormatter = new IntegerFormatter();
 
-		final Formatter<Person> personFormatter = new PersonFormatter();
+        final Formatter<Person> personFormatter = new PersonFormatter();
 
-		final DataMap data = new DataMap();
-		data.set("title", "Anett oldala");
-		data.set("persons", persons);
-		data.set("formatter", formatter);
-		data.set("integerFormatter", integerFormatter);
+        final DataMap data = new DataMap();
+        data.set("title", "Test page");
+        data.set("persons", persons);
+        data.set("formatter", formatter);
+        data.set("integerFormatter", integerFormatter);
 
-		data.set("personFormatter", personFormatter);
+        data.set("personFormatter", personFormatter);
 
-		return Results.html().render(data);
-	}
+        return Results.html().render(data);
+    }
 
-	public Result userDashboard(@PathParam("email") final String email,
-			@PathParam("id") final Integer id, final Context context) {
+    public Result userDashboard(@PathParam("email") final String email, @PathParam("id") final Integer id, final Context context) {
 
-		final Map<String, Object> map = new HashMap<String, Object>();
-		// generate tuples, convert integer to string here because Freemarker
-		// does it in locale
-		// dependent way with commas etc
-		map.put("id", Integer.toString(id));
-		map.put("email", email);
+        final Map<String, Object> map = new HashMap<String, Object>();
+        // generate tuples, convert integer to string here because Freemarker
+        // does it in locale
+        // dependent way with commas etc
+        map.put("id", Integer.toString(id));
+        map.put("email", email);
 
-		// and render page with both parameters:
-		return Results.html().render(map);
-	}
+        // and render page with both parameters:
+        return Results.html().render(map);
+    }
 
-	public Result validation(final Validation validation,
-			@Param("email") @Required final String email) {
+    public Result validation(final Validation validation, @Param("email") @Required final String email) {
 
-		if (validation.hasViolations()) {
-			return Results.json()
-					.render(validation.getFieldViolations("email"));
-		} else {
-			return Results.json().render(email);
-		}
-	}
+        if (validation.hasViolations()) {
+            return Results.json().render(validation.getFieldViolations("email"));
+        } else {
+            return Results.json().render(email);
+        }
+    }
 
-	public Result redirect(final Context context) {
-		// Redirects back to the main page simply call redirect
-		return Results.redirect("/");
+    public Result redirect(final Context context) {
+        // Redirects back to the main page simply call redirect
+        return Results.redirect("/");
 
-	}
+    }
 
-	public Result session(final Context context) {
-		context.getSessionCookie().put("username", "kevin");
+    public Result session(final Context context) {
+        context.getSessionCookie().put("username", "kevin");
 
-		return Results.html().render(context.getSessionCookie().getData());
+        return Results.html().render(context.getSessionCookie().getData());
 
-	}
+    }
 
-	public Result contactForm(final Context context) {
+    public Result contactForm(final Context context) {
 
-		return Results.html();
+        return Results.html();
 
-	}
+    }
 
-	public Result postContactForm(final Context context, final Contact contact) {
-		// contact is parsed into the method
-		// and automatically gets rendered via the html
-		// templating engine.
-		return Results.html().render(contact);
-	}
+    public Result postContactForm(final Context context, final Contact contact) {
+        // contact is parsed into the method
+        // and automatically gets rendered via the html
+        // templating engine.
+        return Results.html().render(contact);
+    }
 
-	public Result htmlEscaping(final Context context) {
+    public Result htmlEscaping(final Context context) {
 
-		// just an example of html escaping in action.
-		// just visit /htmlEscaping and check out the source
-		// all problematic characters will be escaped
-		final String maliciousJavascript = "<script>alert('Hello');</script>";
+        // just an example of html escaping in action.
+        // just visit /htmlEscaping and check out the source
+        // all problematic characters will be escaped
+        final String maliciousJavascript = "<script>alert('Hello');</script>";
 
-		final Map<String, String> renderMap = Maps.newHashMap();
-		renderMap.put("maliciousJavascript", maliciousJavascript);
+        final Map<String, String> renderMap = Maps.newHashMap();
+        renderMap.put("maliciousJavascript", maliciousJavascript);
 
-		return Results.html().render(renderMap);
+        return Results.html().render(renderMap);
 
-	}
+    }
 
 }
