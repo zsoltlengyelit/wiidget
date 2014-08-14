@@ -66,7 +66,7 @@ public class DefaultWiidgetFactory implements WiidgetFactory {
 	}
 
 	public DefaultWiidgetFactory(final WiidgetProperties wiidgetProperties, final WiidgetContext context, final ResultTransformerRegistrator resultTransformerRegistrator,
-	        final DefaultConfiguration configuration) {
+	        final Configuration configuration) {
 
 		this.wiidgetProperties = wiidgetProperties;
 		this.wiidgetContext = context;

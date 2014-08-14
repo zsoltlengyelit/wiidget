@@ -21,8 +21,7 @@ public class JavaScriptFile extends AbstractResourceLinkWiidget {
 	@Override
 	public String getTemplate() {
 
-		final String path = getWiidgetFactory().getUrlResolver().createURL(
-				getUrl());
+		final String path = getWiidgetFactory().getConfiguration().getUrlResolver().createURL(getUrl());
 
 		return new Tag("script").a("type", getType()).a("src", path).toString();
 	}

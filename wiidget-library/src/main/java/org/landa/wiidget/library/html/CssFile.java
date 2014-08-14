@@ -16,11 +16,9 @@ public class CssFile extends AbstractResourceLinkWiidget {
 	@Override
 	public String getTemplate() {
 
-		final String path = getWiidgetFactory().getUrlResolver().createURL(
-				getUrl());
+		final String path = getWiidgetFactory().getConfiguration().getUrlResolver().createURL(getUrl());
 
-		return new Tag("link").a("rel", "stylesheet").a("href", path)
-				.a("media", getMedia()).toString();
+		return new Tag("link").a("rel", "stylesheet").a("href", path).a("media", getMedia()).toString();
 	}
 
 	public String getMedia() {
