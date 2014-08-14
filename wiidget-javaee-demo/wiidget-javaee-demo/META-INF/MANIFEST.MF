@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: wiidget-javaee-demo
-Bundle-SymbolicName: wiidget-javaee-demo
-Bundle-Version: 1.0.0.qualifier
-Export-Package: org.landa.wiidget.javaee.demo,
- wiidget
