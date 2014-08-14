@@ -422,7 +422,7 @@ public class WiidgetLangProcessor extends WiidgetView {
 	}
 
 	private Class<? extends Wiidget> getRawType() {
-		return getWiidgetFactory().getWiidgetProperties().getRawType();
+		return getWiidgetFactory().getConfiguration().getRawType();
 	}
 
 	private Wiidget createWiidget(final WiidgetResource wiidgetResource, final WiidgetArgumentsContext arguments) throws WiidgetParserException {
@@ -456,7 +456,7 @@ public class WiidgetLangProcessor extends WiidgetView {
 	}
 
 	private Wiidget createExternalWiidget(final ExternalWiidgetResource wiidgetResource, final WiidgetArgumentsContext arguments) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 

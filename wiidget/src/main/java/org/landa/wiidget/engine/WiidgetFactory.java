@@ -6,7 +6,7 @@ import java.util.Stack;
 import org.landa.wiidget.Wiidget;
 import org.landa.wiidget.WiidgetView;
 import org.landa.wiidget.context.WiidgetContext;
-import org.landa.wiidget.url.URLResolver;
+import org.landa.wiidget.engine.configuration.Configuration;
 import org.landa.wiidget.util.DataMap;
 import org.landa.wiidget.util.WiidgetProperties;
 
@@ -23,8 +23,7 @@ public interface WiidgetFactory {
 	 * @param attributes
 	 * @return
 	 */
-	public <W extends Wiidget> W createWiidget(WiidgetView owner,
-			Class<W> widgetClass, DataMap attributes, boolean putToStack);
+	public <W extends Wiidget> W createWiidget(WiidgetView owner, Class<W> widgetClass, DataMap attributes, boolean putToStack);
 
 	/**
 	 * @return
@@ -39,43 +38,41 @@ public interface WiidgetFactory {
 
 	/**
 	 * Creates new instance.
-	 * 
+	 *
 	 * @param componentClass
 	 *            class of wiidget
 	 * @param data
 	 *            data to set
 	 * @return instance
 	 */
-	public <C extends Wiidget> C createComponent(final Class<C> componentClass,
-			final DataMap data);
+	public <C extends Wiidget> C createComponent(final Class<C> componentClass, final DataMap data);
 
 	/**
 	 * Generates unique id.
-	 * 
+	 *
 	 * @return id
 	 */
 	public String getUniqueId();
 
-	public void addWiidget(final Wiidget wiidget, final WiidgetView owner,
-			final boolean putToStack);
+	public void addWiidget(final Wiidget wiidget, final WiidgetView owner, final boolean putToStack);
 
 	/**
 	 * Returns the underlying registrator.
-	 * 
+	 *
 	 * @return
 	 */
 	public ResultTransformerRegistrator getResutlTransformerRegistrator();
 
 	/**
 	 * Properties getter.
-	 * 
+	 *
 	 * @return
 	 */
 	public WiidgetProperties getWiidgetProperties();
 
 	/**
 	 * Holds the context variables.
-	 * 
+	 *
 	 * @return
 	 */
 	public WiidgetContext getWiidgetContext();
@@ -87,6 +84,6 @@ public interface WiidgetFactory {
 
 	public void addResourceLink(ResourceLink resourceLink);
 
-	public URLResolver getUrlResolver();
+	public Configuration getConfiguration();
 
 }

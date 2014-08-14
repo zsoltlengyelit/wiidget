@@ -10,20 +10,18 @@ import org.landa.wiidget.Wiidget;
 import org.landa.wiidget.WiidgetView;
 import org.landa.wiidget.context.DefaultWiidgetContext;
 import org.landa.wiidget.context.WiidgetContext;
+import org.landa.wiidget.engine.configuration.Configuration;
+import org.landa.wiidget.engine.configuration.DefaultConfiguration;
 import org.landa.wiidget.reflect.Reflection;
-import org.landa.wiidget.url.TransparentURLResolver;
-import org.landa.wiidget.url.URLResolver;
 import org.landa.wiidget.util.DataMap;
 import org.landa.wiidget.util.DefaultWiidgetProperties;
 import org.landa.wiidget.util.WiidgetProperties;
-import org.landa.wiidget.validation.DefaultWiidgetValidator;
 import org.landa.wiidget.validation.ValidationError;
 import org.landa.wiidget.validation.ValidationException;
-import org.landa.wiidget.validation.WiidgetValidator;
 
 /**
  * Creates wiidgets.
- * 
+ *
  * @author Zsolt Lengyel (zsolt.lengyel.it@gmail.com)
  */
 public class DefaultWiidgetFactory implements WiidgetFactory {
@@ -45,16 +43,9 @@ public class DefaultWiidgetFactory implements WiidgetFactory {
 	 */
 	private int idCounter = 1;
 
-	/**
-	 * 
-	 */
-	protected WiidgetValidator wiidgetValidator;
-
 	protected WiidgetProperties wiidgetProperties;
 
 	protected WiidgetContext wiidgetContext;
-
-	protected URLResolver urlResolver;
 
 	/**
 	 * Resource links.
@@ -62,50 +53,35 @@ public class DefaultWiidgetFactory implements WiidgetFactory {
 	private final Set<ResourceLink> resourceLinks = new LinkedHashSet<ResourceLink>();
 
 	/**
-	 * Creates components instances.
+	 * Global configuration.
 	 */
-	protected ObjectFactory objectFactory;
+	private final Configuration configuration;
 
 	/**
 	 * @param objectFactory
 	 * @param wiidgetValidator
 	 */
 	public DefaultWiidgetFactory() {
-
-		this(new ReflectionObjectFactory(), new DefaultWiidgetValidator(
-				new ReflectionObjectFactory()), new DefaultWiidgetProperties(),
-				new DefaultWiidgetContext(),
-				new ResultTransformerRegistrator(),
-				new TransparentURLResolver());
+		this(new DefaultWiidgetProperties(), new DefaultWiidgetContext(), new ResultTransformerRegistrator(), new DefaultConfiguration());
 	}
 
-	public DefaultWiidgetFactory(final ObjectFactory objectFactory,
-			final WiidgetValidator validator,
-			final WiidgetProperties wiidgetProperties,
-			final WiidgetContext context,
-			final ResultTransformerRegistrator resultTransformerRegistrator,
-			final URLResolver urlResolver) {
+	public DefaultWiidgetFactory(final WiidgetProperties wiidgetProperties, final WiidgetContext context, final ResultTransformerRegistrator resultTransformerRegistrator,
+	        final DefaultConfiguration configuration) {
 
-		this.objectFactory = objectFactory;
-		this.wiidgetValidator = validator;
 		this.wiidgetProperties = wiidgetProperties;
 		this.wiidgetContext = context;
 		this.resultTransformerRegistrator = resultTransformerRegistrator;
-		this.urlResolver = urlResolver;
+
+		this.configuration = configuration;
 
 	}
 
 	public DefaultWiidgetFactory(final WiidgetContext wiidgetContext) {
-		this(new ReflectionObjectFactory(), new DefaultWiidgetValidator(
-				new ReflectionObjectFactory()), new DefaultWiidgetProperties(),
-				wiidgetContext, new ResultTransformerRegistrator(),
-				new TransparentURLResolver());
+		this(new DefaultWiidgetProperties(), wiidgetContext, new ResultTransformerRegistrator(), new DefaultConfiguration());
 	}
 
 	@Override
-	public <W extends Wiidget> W createWiidget(final WiidgetView owner,
-			final Class<W> widgetClass, final DataMap attributes,
-			final boolean putToStack) {
+	public <W extends Wiidget> W createWiidget(final WiidgetView owner, final Class<W> widgetClass, final DataMap attributes, final boolean putToStack) {
 
 		final W widget = createComponent(widgetClass, attributes);
 
@@ -135,10 +111,9 @@ public class DefaultWiidgetFactory implements WiidgetFactory {
 	 * @return
 	 */
 	@Override
-	public <C extends Wiidget> C createComponent(final Class<C> componentClass,
-			final DataMap data) {
+	public <C extends Wiidget> C createComponent(final Class<C> componentClass, final DataMap data) {
 
-		final C component = objectFactory.getInstance(componentClass);
+		final C component = getConfiguration().getObjectFactory().getInstance(componentClass);
 
 		for (final Entry<String, Object> attribute : data.entrySet()) {
 
@@ -161,7 +136,7 @@ public class DefaultWiidgetFactory implements WiidgetFactory {
 	}
 
 	private void validate(final Wiidget wiidget) {
-		final List<ValidationError> errors = wiidgetValidator.validate(wiidget);
+		final List<ValidationError> errors = getConfiguration().getWiidgetValidator().validate(wiidget);
 
 		if (!errors.isEmpty()) {
 
@@ -176,8 +151,7 @@ public class DefaultWiidgetFactory implements WiidgetFactory {
 	}
 
 	@Override
-	public void addWiidget(final Wiidget wiidget, final WiidgetView owner,
-			final boolean putToStack) {
+	public void addWiidget(final Wiidget wiidget, final WiidgetView owner, final boolean putToStack) {
 
 		if (!getWiidgetStack().isEmpty()) {
 			getWiidgetStack().peek().getChildren().add(wiidget);
@@ -224,7 +198,7 @@ public class DefaultWiidgetFactory implements WiidgetFactory {
 	}
 
 	@Override
-	public URLResolver getUrlResolver() {
-		return urlResolver;
+	public Configuration getConfiguration() {
+		return configuration;
 	}
 }
