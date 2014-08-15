@@ -104,7 +104,7 @@ public class ExternalImportTest {
 	}
 
 	private String getExternalUrl(final String path) {
-		return "http://127.0.0.1:" + PORT + "/" + path;
+		return "http://localhost:" + PORT + "/" + path;
 	}
 
 	// to serve wiidget files
