@@ -1,4 +1,4 @@
-![Travis build][https://api.travis-ci.org/zsoltlengyelit/wiidget.png]
+![Travis build](https://api.travis-ci.org/zsoltlengyelit/wiidget.png)
 
 wiidget
 =======
