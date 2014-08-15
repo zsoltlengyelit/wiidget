@@ -12,7 +12,6 @@ import java.util.Map;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BufferedTokenStream;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.apache.commons.io.IOUtils;
 import org.landa.wiidget.ResourceWiidget;
 import org.landa.wiidget.Wiidget;
 import org.landa.wiidget.WiidgetException;
@@ -43,6 +42,7 @@ import org.landa.wiidget.antlr.WiidgetParser.WiidgetVariableBindingContext;
 import org.landa.wiidget.basewiidgets.WiidgetLangCompiler;
 import org.landa.wiidget.engine.WiidgetFactory;
 import org.landa.wiidget.engine.configuration.Configuration;
+import org.landa.wiidget.engine.externals.ExternalWiidgetLoader;
 import org.landa.wiidget.parser.control.ForeachControl;
 import org.landa.wiidget.parser.control.IfControl;
 import org.landa.wiidget.parser.evaluation.EvaluationException;
@@ -468,19 +468,25 @@ public class WiidgetLangProcessor extends WiidgetView {
 	private Wiidget createExternalWiidget(final ExternalWiidgetResource wiidgetResource, final WiidgetArgumentsContext arguments) throws WiidgetParserException {
 
 		final URI uri = wiidgetResource.getUri();
+		final ExternalWiidgetLoader matchingLoader = getWiidgetLoader(uri);
 
-		try {
+		final String content = matchingLoader.load(uri);
 
-			final InputStream stream = uri.toURL().openStream();
-			final String content = IOUtils.toString(stream);
-			final DataMap data = processArguments(arguments, null);
+		final DataMap data = processArguments(arguments, null);
 
-			return getWiidgetFactory().createWiidget(this, WiidgetLangCompiler.class, data().set("value", content).set("context", data), true);
+		return getWiidgetFactory().createWiidget(this, WiidgetLangCompiler.class, data().set("value", content).set("context", data), true);
 
-		} catch (final IOException e) {
-			throw new WiidgetException("Cannot load external wiidget: " + uri.toString(), e);
+	}
+
+	private ExternalWiidgetLoader getWiidgetLoader(final URI uri) {
+
+		for (final ExternalWiidgetLoader loader : getWiidgetFactory().getConfiguration().getExternalWiidgetLoaders()) {
+			if (loader.canHandle(uri)) {
+				return loader;
+			}
 		}
 
+		throw new WiidgetException(String.format("No loader for URI: %s", uri));
 	}
 
 	private String getRealFilename(final String canonicalFileName) {

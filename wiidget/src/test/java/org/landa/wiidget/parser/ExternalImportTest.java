@@ -17,6 +17,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.landa.wiidget.Renderer;
 import org.landa.wiidget.util.DataMap;
@@ -72,9 +73,6 @@ public class ExternalImportTest {
 		builder.append(externalUrl);
 		builder.append("\" as external;\n");
 		builder.append(" external;	");
-		builder.append("	");
-		builder.append("	");
-		builder.append("	");
 
 		final String rendered = Renderer.create().render(builder.toString());
 
@@ -95,6 +93,37 @@ public class ExternalImportTest {
 		builder.append(externalUrl);
 		builder.append("\" as external;\n");
 		builder.append(" external(passedVariable = \"Must print\");	");
+
+		final String rendered = Renderer.create().render(builder.toString());
+
+		final String expected = "Must print";
+		Assert.assertEquals(expected, rendered);
+	}
+
+	@Test
+	public void testResourceFile() {
+
+		final StringBuilder builder = new StringBuilder();
+		builder.append("import \"");
+		builder.append("resource:///externalWiidgets/varOut.wdgt");
+		builder.append("\" as localfile;\n");
+		builder.append(" localfile(passedVariable = \"Must print\");	");
+
+		final String rendered = Renderer.create().render(builder.toString());
+
+		final String expected = "Must print";
+		Assert.assertEquals(expected, rendered);
+	}
+
+	@Test
+	@Ignore("Cannot test this everywhere")
+	public void testLocalFile() {
+
+		final StringBuilder builder = new StringBuilder();
+		builder.append("import \"");
+		builder.append("file://C:/Users/Zsolti/Documents/GitHub/wiidget/wiidget/src/test/resource/externalWiidgets/varOut.wdgt");
+		builder.append("\" as localfile;\n");
+		builder.append(" localfile(passedVariable = \"Must print\");	");
 
 		final String rendered = Renderer.create().render(builder.toString());
 

@@ -18,26 +18,19 @@ public class WiidgetContextTest {
 		Assert.assertSame(wiidgetContext, wiidgetContext.get(WiidgetContext.CONTEXT_VARIABLE));
 	}
 
-	@Test
-	public void testReservedWords() {
+	@Test(expected = IllegalArgumentException.class)
+	public void testReservedWords1() {
+		wiidgetContext.set("true", false);
+	}
 
-		try {
-			wiidgetContext.set("true", false);
-			Assert.fail("should throw exception");
-		} catch (final IllegalArgumentException e) {
-		}
+	@Test(expected = IllegalArgumentException.class)
+	public void testReservedWords2() {
+		wiidgetContext.set("false", false);
 
-		try {
-			wiidgetContext.set("false", false);
-			Assert.fail("should throw exception");
-		} catch (final IllegalArgumentException e) {
-		}
+	}
 
-		try {
-			wiidgetContext.set("context", false);
-			Assert.fail("should throw exception");
-		} catch (final IllegalArgumentException e) {
-		}
-
+	@Test(expected = IllegalArgumentException.class)
+	public void testReservedWords3() {
+		wiidgetContext.set("context", false);
 	}
 }
