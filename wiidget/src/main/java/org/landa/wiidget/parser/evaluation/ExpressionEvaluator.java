@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.landa.wiidget.Wiidget;
 import org.landa.wiidget.antlr.WiidgetParser.ExpressionContext;
 import org.landa.wiidget.antlr.WiidgetParser.ExpressionListContext;
@@ -15,6 +16,7 @@ import org.landa.wiidget.context.WiidgetContext;
 import org.landa.wiidget.parser.util.StringDeclaration;
 import org.landa.wiidget.reflect.Reflection;
 import org.landa.wiidget.reflect.ReflectionException;
+import org.mvel2.PropertyAccessException;
 
 /**
  *
@@ -45,13 +47,7 @@ public class ExpressionEvaluator {
         // wiidget variable
         final WiidgetVariableContext wiidgetVariableContext = expression.wiidgetVariable();
         if (null != wiidgetVariableContext) {
-            final String wiidgetVariable = wiidgetVariableContext.Identifier().getText();
-
-            final Wiidget wiidget = wiidgetMap.get(wiidgetVariable);
-            if (null == wiidget) {
-                handleUndefinedWiidgetVariable(wiidgetVariable);
-            }
-            return wiidget;
+            return evaluateWiidgetVariable(wiidgetVariableContext);
         }
 
         // wiidget method call
@@ -63,32 +59,7 @@ public class ExpressionEvaluator {
         // expression with identifier
         final TerminalNode identifierNode = expression.Identifier();
         if (null != identifierNode) {
-            final String identifier = identifierNode.getText();
-
-            final ExpressionContext baseExpressionContext = expression.expression(0);
-            if (null != baseExpressionContext) {
-
-                final Object baseValue = evaluate(baseExpressionContext);
-                if (baseValue == null) {
-                    throw new EvaluationException("Value is null for: " + baseExpressionContext.getText());
-                }
-
-                final TerminalNode lparen = expression.LPAREN();
-                if (null == lparen) {
-                    // property getter
-                    return Reflection.getFieldValue(baseValue, identifier);
-                } else {
-
-                    final ExpressionListContext expressionListContext = expression.expressionList();
-                    final Object[] arguments = evaluateExpressionList(expressionListContext);
-
-                    return Reflection.callMethod(baseValue, identifier, arguments);
-
-                }
-
-            }
-
-            throw new EvaluationException("Cannot evaluate expression: " + expression.getText());
+            return evaluateExpressionWithIdentifier(expression, identifierNode);
         }
 
         // indexing
@@ -106,17 +77,32 @@ public class ExpressionEvaluator {
 
             // resolve index
             if (baseValue instanceof Map) {
+                @SuppressWarnings("rawtypes")
                 final Map mapValue = (Map) baseValue;
                 return mapValue.get(index);
 
             } else if (baseValue instanceof List) {
+                @SuppressWarnings("rawtypes")
                 final List listValue = (List) baseValue;
-                listValue.get(Integer.parseInt(index.toString()));
+                try {
+                    final int indexNumber = Integer.parseInt(index.toString());
+                    return listValue.get(indexNumber);
+                } catch (final NumberFormatException numberFormatException) {
+                    // try get property
+
+                    try {
+                        return evaluatePropertyByReflection(listValue, index.toString());
+                    } catch (final PropertyAccessException propertyAccessException) {
+
+                        return MethodUtils.getAccessibleMethod(listValue.getClass(), index.toString());
+                    }
+
+                    //  throw new EvaluationException(String.format("Illegal index: %s on list: %s", index, listValue), numberFormatException);
+                }
 
             } else {
-
                 // try get property
-                return Reflection.getFieldValue(baseValue, index.toString());
+                return evaluatePropertyByReflection(baseValue, index);
             }
         }
 
@@ -124,8 +110,7 @@ public class ExpressionEvaluator {
         final TerminalNode negotionOperator = expression.NegotionOperator();
         if (null != negotionOperator) {
 
-            final Boolean booleanValue = (Boolean) evaluate(expression.expression(0));
-            return !booleanValue;
+            return evaluateNegatedBoolean(expression);
         }
 
         // mathematical
@@ -167,16 +152,89 @@ public class ExpressionEvaluator {
         final TerminalNode colon = expression.COLON();
 
         if (null != question && null != colon) {
-            final ExpressionContext conditionExpression = expression.expression(0);
-
-            final Boolean condition = (Boolean) evaluate(conditionExpression);
-
-            final ExpressionContext value = expression.expression(condition ? 1 : 2);
-
-            return evaluate(value);
+            return evaluateTernaryOperator(expression);
         }
 
         throw new EvaluationException("Cannot evaluate expression: '" + expression.getText() + "'");
+    }
+
+    private Object evaluatePropertyByReflection(final Object baseValue, final Object index) throws PropertyAccessException {
+        return Reflection.getFieldValue(baseValue, index.toString());
+    }
+
+    /**
+     * Evaluates " condition ? 'when true' : 'otherwise' " like expressions.
+     *
+     * @param expression
+     *            the expression with ternary operators.
+     * @return value of expression
+     * @throws EvaluationException
+     *             when cannot evaluate expression
+     */
+    private Object evaluateTernaryOperator(final ExpressionContext expression) throws EvaluationException {
+        final ExpressionContext conditionExpression = expression.expression(0);
+
+        final Boolean condition = (Boolean) evaluate(conditionExpression);
+
+        // evaluate the first operand if true. otherwise the second
+        final ExpressionContext value = expression.expression(condition ? 1 : 2);
+
+        return evaluate(value);
+    }
+
+    private Object evaluateNegatedBoolean(final ExpressionContext expression) throws EvaluationException {
+        final Boolean booleanValue = (Boolean) evaluate(expression.expression(0));
+        return !booleanValue;
+    }
+
+    /**
+     * Evaluates expression that contains identifier
+     *
+     * @param expression
+     *            expression
+     * @param identifierNode
+     *            the identifier
+     * @return value of expression
+     * @throws EvaluationException
+     *             when cannot evaluate expression
+     */
+    private Object evaluateExpressionWithIdentifier(final ExpressionContext expression, final TerminalNode identifierNode) throws EvaluationException {
+        final String identifier = identifierNode.getText();
+
+        final ExpressionContext baseExpressionContext = expression.expression(0);
+        if (null != baseExpressionContext) {
+
+            final Object baseValue = evaluate(baseExpressionContext);
+            if (baseValue == null) {
+                throw new EvaluationException("Value is null for: " + baseExpressionContext.getText());
+            }
+
+            final TerminalNode lparen = expression.LPAREN();
+            if (null == lparen) {
+                // property getter
+                return Reflection.getFieldValue(baseValue, identifier);
+            } else {
+
+                final ExpressionListContext expressionListContext = expression.expressionList();
+                final Object[] arguments = evaluateExpressionList(expressionListContext);
+
+                return Reflection.callMethod(baseValue, identifier, arguments);
+
+            }
+
+        }
+
+        throw new EvaluationException("Cannot evaluate expression: " + expression.getText());
+    }
+
+    private Object evaluateWiidgetVariable(final WiidgetVariableContext wiidgetVariableContext) throws EvaluationException {
+        final String wiidgetVariable = wiidgetVariableContext.Identifier().getText();
+
+        final Wiidget wiidget = getWiidgetMap().get(wiidgetVariable);
+        if (null == wiidget) {
+            handleUndefinedWiidgetVariable(wiidgetVariable);
+        }
+        return wiidget;
     }
 
     /**
@@ -413,7 +471,7 @@ public class ExpressionEvaluator {
 
         final String wiidgetVariable = wiidgetMethodCallExpressionContext.wiidgetVariable().Identifier().getText();
 
-        final Wiidget wiidget = wiidgetMap.get(wiidgetVariable);
+        final Wiidget wiidget = getWiidgetMap().get(wiidgetVariable);
 
         if (null == wiidget) {
             handleUndefinedWiidgetVariable(wiidgetVariable);
@@ -446,5 +504,12 @@ public class ExpressionEvaluator {
 
     public WiidgetContext getWiidgetContext() {
         return wiidgetContext;
+    }
+
+    /**
+     * @return the wiidgetMap
+     */
+    public Map<String, Wiidget> getWiidgetMap() {
+        return wiidgetMap;
     }
 }

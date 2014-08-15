@@ -4,7 +4,7 @@
 
 	<groupId>landa</groupId>
 	<artifactId>wiidget-library</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<packaging>jar</packaging>
 
 	<name>wiidget-library</name>
@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>landa</groupId>
 			<artifactId>wiidget</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.1.0</version>
 		</dependency>
 	</dependencies>
 </project>

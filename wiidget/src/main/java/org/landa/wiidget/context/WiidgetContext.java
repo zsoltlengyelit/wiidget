@@ -5,29 +5,32 @@ import java.util.Set;
 
 /**
  * The context provides environmental variables in the rendering process.
- * 
+ *
  * @author Zsolt Lengyel (zsolt.lengyel.it@gmail.com)
  */
 public interface WiidgetContext {
 
-	/**
-	 * Get variable value.
-	 * 
-	 * @param variable
-	 *            variable name
-	 * @return variable value
-	 */
-	public Object get(String variable);
+    /** The varuiable name that refers to this context. */
+    public static final String CONTEXT_VARIABLE = "context";
 
-	public void set(String variable, Object value);
+    /**
+     * Get variable value.
+     * 
+     * @param variable
+     *            variable name
+     * @return variable value
+     */
+    public Object get(String variable);
 
-	public void remove(String variable);
+    public void set(String variable, Object value);
 
-	public boolean isSet(String variable);
+    public void remove(String variable);
 
-	public void setAll(Map<String, Object> data);
+    public boolean isSet(String variable);
 
-	public Map<String, Object> getAll();
+    public void setAll(Map<String, Object> data);
 
-	public Set<String> getKeys();
+    public Map<String, Object> getAll();
+
+    public Set<String> getKeys();
 }
