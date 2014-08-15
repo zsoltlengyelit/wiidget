@@ -6,10 +6,10 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.landa.wiidget.WiidgetException;
 import org.landa.wiidget.antlr.WiidgetLexerException;
+import org.landa.wiidget.basewiidgets.WiidgetLangCompiler;
 import org.landa.wiidget.io.StringTemplate;
 import org.landa.wiidget.library.BaseTagWiidget;
 import org.landa.wiidget.library.template.Part;
-import org.landa.wiidget.library.template.WiidgetLangCompiler;
 import org.landa.wiidget.util.DataMap;
 import org.landa.wiidget.util.WiidgetProperties;
 

@@ -3,6 +3,7 @@ package org.landa.wiidget.parser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Map;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BufferedTokenStream;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.apache.commons.io.IOUtils;
 import org.landa.wiidget.ResourceWiidget;
 import org.landa.wiidget.Wiidget;
 import org.landa.wiidget.WiidgetException;
@@ -38,6 +40,7 @@ import org.landa.wiidget.antlr.WiidgetParser.WiidgetBodyContext;
 import org.landa.wiidget.antlr.WiidgetParser.WiidgetDeclarationContext;
 import org.landa.wiidget.antlr.WiidgetParser.WiidgetMethodCallExpressionContext;
 import org.landa.wiidget.antlr.WiidgetParser.WiidgetVariableBindingContext;
+import org.landa.wiidget.basewiidgets.WiidgetLangCompiler;
 import org.landa.wiidget.engine.WiidgetFactory;
 import org.landa.wiidget.engine.configuration.Configuration;
 import org.landa.wiidget.parser.control.ForeachControl;
@@ -64,596 +67,609 @@ import org.landa.wiidget.util.DataMap;
  */
 public class WiidgetLangProcessor extends WiidgetView {
 
-    /** In this object can we store imported classes, files and aliases. */
-    private ImportContext importContext;
-
-    /**
-     * Lang processor will act as this view.
-     */
-    private final WiidgetView ownerView;
-
-    /**
-     * Stores wiidget by names if name is defined.
-     */
-    private final Map<String, Wiidget> wiidgetMap = new HashMap<>();
-
-    public WiidgetLangProcessor() {
-        super();
-
-        this.ownerView = null;
-    }
-
-    /**
-     *
-     * @param wiidgetFactory
-     */
-    public WiidgetLangProcessor(final WiidgetFactory wiidgetFactory) {
-        this(wiidgetFactory, null);
-    }
-
-    /**
-     *
-     * @param wiidgetFactory
-     * @param owner
-     */
-    public WiidgetLangProcessor(final WiidgetFactory wiidgetFactory, final WiidgetView owner) {
-        super(wiidgetFactory);
-
-        this.ownerView = owner == null ? this : owner;
-
-    }
-
-    /**
-     * Children processors can import default classes here.
-     */
-    protected void importDefaultClasses() {
-    }
-
-    @Override
-    public void run() {
-        // NO-OP
-    }
-
-    @Override
-    public WiidgetView getOwner() {
-        return ownerView == null ? super.getOwner() : ownerView;
-    }
-
-    /**
-     * @param template
-     * @return
-     * @throws WiidgetParserException
-     */
-    public String render(final String template) throws WiidgetParserException {
-
-        final CompilationUnitContext compilationUnitContext = getCompilationUnitContext(template);
-        return render(compilationUnitContext);
-    }
-
-    /**
-     * @param template
-     * @return
-     * @throws WiidgetParserException
-     * @throws IOException
-     */
-    public String render(final InputStream template) throws WiidgetParserException {
-
-        final CompilationUnitContext compilationUnitContext = getCompilationUnitContext(template);
-        return render(compilationUnitContext);
-    }
-
-    /**
-     * @param compilationUnitContext
-     * @return
-     * @throws WiidgetParserException
-     */
-    private String render(final CompilationUnitContext compilationUnitContext) throws WiidgetParserException {
+	/** In this object can we store imported classes, files and aliases. */
+	private ImportContext importContext;
+
+	/**
+	 * Lang processor will act as this view.
+	 */
+	private final WiidgetView ownerView;
+
+	/**
+	 * Stores wiidget by names if name is defined.
+	 */
+	private final Map<String, Wiidget> wiidgetMap = new HashMap<>();
+
+	public WiidgetLangProcessor() {
+		super();
+
+		this.ownerView = null;
+	}
+
+	/**
+	 *
+	 * @param wiidgetFactory
+	 */
+	public WiidgetLangProcessor(final WiidgetFactory wiidgetFactory) {
+		this(wiidgetFactory, null);
+	}
+
+	/**
+	 *
+	 * @param wiidgetFactory
+	 * @param owner
+	 */
+	public WiidgetLangProcessor(final WiidgetFactory wiidgetFactory, final WiidgetView owner) {
+		super(wiidgetFactory);
+
+		this.ownerView = owner == null ? this : owner;
+
+	}
+
+	/**
+	 * Children processors can import default classes here.
+	 */
+	protected void importDefaultClasses() {
+	}
+
+	@Override
+	public void run() {
+		// NO-OP
+	}
+
+	@Override
+	public WiidgetView getOwner() {
+		return ownerView == null ? super.getOwner() : ownerView;
+	}
+
+	/**
+	 * @param template
+	 * @return
+	 * @throws WiidgetParserException
+	 */
+	public String render(final String template) throws WiidgetParserException {
+
+		final CompilationUnitContext compilationUnitContext = getCompilationUnitContext(template);
+		return render(compilationUnitContext);
+	}
+
+	/**
+	 * @param template
+	 * @return
+	 * @throws WiidgetParserException
+	 * @throws IOException
+	 */
+	public String render(final InputStream template) throws WiidgetParserException {
+
+		final CompilationUnitContext compilationUnitContext = getCompilationUnitContext(template);
+		return render(compilationUnitContext);
+	}
+
+	/**
+	 * @param compilationUnitContext
+	 * @return
+	 * @throws WiidgetParserException
+	 */
+	private String render(final CompilationUnitContext compilationUnitContext) throws WiidgetParserException {
 
-        importContext = createImportContext(compilationUnitContext.importDeclaration());
-        try {
-            importContext.process();
-        } catch (final ImportException e) {
-            throw new WiidgetParserException("Illegal import", e);
-        }
+		importContext = createImportContext(compilationUnitContext.importDeclaration());
+		try {
+			importContext.process();
+		} catch (final ImportException e) {
+			throw new WiidgetParserException("Illegal import", e);
+		}
 
-        importDefaultClasses();
+		importDefaultClasses();
 
-        processStatements(compilationUnitContext.statementDeclaration());
+		processStatements(compilationUnitContext.statementDeclaration());
 
-        final String result = this.render();
+		final String result = this.render();
 
-        return result;
-    }
+		return result;
+	}
 
-    /**
-     * Creates import context that can process and hold import informatons.
-     *
-     * @param importDeclaration
-     *            imports in template
-     * @return import context
-     */
-    protected ImportContext createImportContext(final List<ImportDeclarationContext> importDeclaration) {
-        return new ImportContext(importDeclaration); // use default context
-    }
+	/**
+	 * Creates import context that can process and hold import informatons.
+	 *
+	 * @param importDeclaration
+	 *            imports in template
+	 * @return import context
+	 */
+	protected ImportContext createImportContext(final List<ImportDeclarationContext> importDeclaration) {
+		return new ImportContext(importDeclaration); // use default context
+	}
 
-    private void processStatements(final List<StatementDeclarationContext> statementDeclaration) throws WiidgetParserException {
+	private void processStatements(final List<StatementDeclarationContext> statementDeclaration) throws WiidgetParserException {
 
-        if (null == statementDeclaration) {// no child statement
-            return;
-        }
+		if (null == statementDeclaration) {// no child statement
+			return;
+		}
 
-        for (final StatementDeclarationContext statementDeclarationContext : statementDeclaration) {
-            processStatement(statementDeclarationContext);
-        }
+		for (final StatementDeclarationContext statementDeclarationContext : statementDeclaration) {
+			processStatement(statementDeclarationContext);
+		}
 
-    }
+	}
 
-    private void processStatement(final StatementDeclarationContext statementDeclarationContext) throws WiidgetParserException {
-        final ControlStatementContext controlStatementContext = statementDeclarationContext.controlStatement();
+	private void processStatement(final StatementDeclarationContext statementDeclarationContext) throws WiidgetParserException {
+		final ControlStatementContext controlStatementContext = statementDeclarationContext.controlStatement();
 
-        if (null != controlStatementContext) {
+		if (null != controlStatementContext) {
 
-            processControl(controlStatementContext);
-            return;
-        }
+			processControl(controlStatementContext);
+			return;
+		}
 
-        final WiidgetDeclarationContext wiidgetDeclarationContext = statementDeclarationContext.wiidgetDeclaration();
-        if (null != wiidgetDeclarationContext) {
-            processWiidget(wiidgetDeclarationContext);
-        }
+		final WiidgetDeclarationContext wiidgetDeclarationContext = statementDeclarationContext.wiidgetDeclaration();
+		if (null != wiidgetDeclarationContext) {
+			processWiidget(wiidgetDeclarationContext);
+		}
 
-        final WiidgetMethodCallExpressionContext wiidgetMethodCallExpressionContext = statementDeclarationContext.wiidgetMethodCallExpression();
-        if (null != wiidgetMethodCallExpressionContext) {
+		final WiidgetMethodCallExpressionContext wiidgetMethodCallExpressionContext = statementDeclarationContext.wiidgetMethodCallExpression();
+		if (null != wiidgetMethodCallExpressionContext) {
 
-            evaluateWiidgetMethodCall(wiidgetMethodCallExpressionContext);
-        }
+			evaluateWiidgetMethodCall(wiidgetMethodCallExpressionContext);
+		}
 
-        final SeamStatementContext seamStatementContext = statementDeclarationContext.seamStatement();
-        if (null != seamStatementContext) {
-            processSeamStatement(seamStatementContext);
-        }
+		final SeamStatementContext seamStatementContext = statementDeclarationContext.seamStatement();
+		if (null != seamStatementContext) {
+			processSeamStatement(seamStatementContext);
+		}
 
-    }
+	}
 
-    private Object evaluateWiidgetMethodCall(final WiidgetMethodCallExpressionContext wiidgetMethodCallExpressionContext) throws EvaluationException {
-        final ExpressionEvaluator evaluator = createExpressionEvaluator();
-        return evaluator.evaluate(wiidgetMethodCallExpressionContext);
-    }
+	private Object evaluateWiidgetMethodCall(final WiidgetMethodCallExpressionContext wiidgetMethodCallExpressionContext) throws EvaluationException {
+		final ExpressionEvaluator evaluator = createExpressionEvaluator();
+		return evaluator.evaluate(wiidgetMethodCallExpressionContext);
+	}
 
-    private void processSeamStatement(final SeamStatementContext seamStatementContext) throws WiidgetParserException {
+	private void processSeamStatement(final SeamStatementContext seamStatementContext) throws WiidgetParserException {
 
-        final ExpressionContext expressionContext = seamStatementContext.expression();
+		final ExpressionContext expressionContext = seamStatementContext.expression();
 
-        final Object object = evaluateExpression(expressionContext);
+		final Object object = evaluateExpression(expressionContext);
 
-        if (object instanceof Wiidget == false) {
-            throw new WiidgetParserException("Expression '" + expressionContext.getText() + "' must be return wiidget instance.");
-        }
+		if (object instanceof Wiidget == false) {
+			throw new WiidgetParserException("Expression '" + expressionContext.getText() + "' must be return wiidget instance.");
+		}
 
-        final Wiidget wiidget = (Wiidget) object;
+		final Wiidget wiidget = (Wiidget) object;
 
-        beginWiidget(wiidget);
+		beginWiidget(wiidget);
 
-        final WiidgetBodyContext wiidgetBodyContext = seamStatementContext.wiidgetBody();
-        if (null != wiidgetBodyContext) {
-            processStatements(wiidgetBodyContext.statementDeclaration());
-        }
+		final WiidgetBodyContext wiidgetBodyContext = seamStatementContext.wiidgetBody();
+		if (null != wiidgetBodyContext) {
+			processStatements(wiidgetBodyContext.statementDeclaration());
+		}
 
-        endWiidget(wiidget);
-    }
+		endWiidget(wiidget);
+	}
 
-    private void processControl(final ControlStatementContext controlStatementContext) throws WiidgetParserException {
+	private void processControl(final ControlStatementContext controlStatementContext) throws WiidgetParserException {
 
-        final WiidgetBodyContext bodyContext = controlStatementContext.wiidgetBody();
+		final WiidgetBodyContext bodyContext = controlStatementContext.wiidgetBody();
 
-        final IfControlContext ifControlContext = controlStatementContext.ifControl();
-        if (null != ifControlContext) {
+		final IfControlContext ifControlContext = controlStatementContext.ifControl();
+		if (null != ifControlContext) {
 
-            final IfControl ifControl = processIfControl(ifControlContext);
+			final IfControl ifControl = processIfControl(ifControlContext);
 
-            processIf(ifControl, bodyContext);
+			processIf(ifControl, bodyContext);
 
-        } else {
+		} else {
 
-            final ForeachControlContext foreachControlContext = controlStatementContext.foreachControl();
-            final ForeachControl foreachControl = processForeachControl(foreachControlContext);
+			final ForeachControlContext foreachControlContext = controlStatementContext.foreachControl();
+			final ForeachControl foreachControl = processForeachControl(foreachControlContext);
 
-            processForeach(foreachControl, bodyContext);
-        }
+			processForeach(foreachControl, bodyContext);
+		}
 
-    }
+	}
 
-    private void processForeach(final ForeachControl foreachControl, final WiidgetBodyContext bodyContext) throws WiidgetParserException {
+	private void processForeach(final ForeachControl foreachControl, final WiidgetBodyContext bodyContext) throws WiidgetParserException {
 
-        final String variable = foreachControl.getVariable();
-        final Iterable<?> iterable = foreachControl.getIterable();
+		final String variable = foreachControl.getVariable();
+		final Iterable<?> iterable = foreachControl.getIterable();
 
-        Object oldVariableValue = null;
-        if (getWiidgetContext().isSet(variable)) {
-            oldVariableValue = getWiidgetContext().get(variable);
-        }
+		Object oldVariableValue = null;
+		if (getWiidgetContext().isSet(variable)) {
+			oldVariableValue = getWiidgetContext().get(variable);
+		}
 
-        if (null == iterable) {
-            throw new WiidgetException("Itarable value in 'foreach' statement is null.");
-        }
+		if (null == iterable) {
+			throw new WiidgetException("Itarable value in 'foreach' statement is null.");
+		}
 
-        for (final Object item : iterable) {
+		for (final Object item : iterable) {
 
-            getWiidgetContext().set(variable, item);
+			getWiidgetContext().set(variable, item);
 
-            processStatements(bodyContext.statementDeclaration());
-        }
+			processStatements(bodyContext.statementDeclaration());
+		}
 
-        if (oldVariableValue == null) {
-            getWiidgetContext().remove(variable); // remove
-        } else {
-            getWiidgetContext().set(variable, oldVariableValue); // set back old
-            // value
-        }
+		if (oldVariableValue == null) {
+			getWiidgetContext().remove(variable); // remove
+		} else {
+			getWiidgetContext().set(variable, oldVariableValue); // set back old
+			// value
+		}
 
-    }
+	}
 
-    private void processIf(final IfControl ifControl, final WiidgetBodyContext bodyContext) throws WiidgetParserException {
+	private void processIf(final IfControl ifControl, final WiidgetBodyContext bodyContext) throws WiidgetParserException {
 
-        if (ifControl.getValue()) {
+		if (ifControl.getValue()) {
 
-            processStatements(bodyContext.statementDeclaration());
-        }
+			processStatements(bodyContext.statementDeclaration());
+		}
 
-    }
+	}
 
-    private ForeachControl processForeachControl(final ForeachControlContext foreachControlContext) throws WiidgetParserException {
+	private ForeachControl processForeachControl(final ForeachControlContext foreachControlContext) throws WiidgetParserException {
 
-        final String variable = foreachControlContext.foreachVariable().getText();
+		final String variable = foreachControlContext.foreachVariable().getText();
 
-        Iterable<?> iterable = null;
-        try {
-            iterable = (Iterable<?>) evaluateExpression(foreachControlContext.expression());
-        } catch (final ClassCastException castException) {
+		Iterable<?> iterable = null;
+		try {
+			iterable = (Iterable<?>) evaluateExpression(foreachControlContext.expression());
+		} catch (final ClassCastException castException) {
 
-            throw new WiidgetParserException("Foreach statement must have iterable class.", castException);
-        }
+			throw new WiidgetParserException("Foreach statement must have iterable class.", castException);
+		}
 
-        return new ForeachControl(variable, iterable);
+		return new ForeachControl(variable, iterable);
 
-    }
+	}
 
-    private IfControl processIfControl(final IfControlContext ifControlContext) throws WiidgetParserException {
-        try {
+	private IfControl processIfControl(final IfControlContext ifControlContext) throws WiidgetParserException {
+		try {
 
-            final Boolean condition = (Boolean) evaluateExpression(ifControlContext.expression());
+			final Boolean condition = (Boolean) evaluateExpression(ifControlContext.expression());
 
-            return new IfControl(condition);
+			return new IfControl(condition);
 
-        } catch (final ClassCastException castException) {
+		} catch (final ClassCastException castException) {
 
-            throw new WiidgetParserException("Expression must be boolean: " + ifControlContext.expression().getText(), castException);
-        }
+			throw new WiidgetParserException("Expression must be boolean: " + ifControlContext.expression().getText(), castException);
+		}
 
-    }
+	}
 
-    private void processWiidget(final WiidgetDeclarationContext declarationContext) throws WiidgetParserException {
+	private void processWiidget(final WiidgetDeclarationContext declarationContext) throws WiidgetParserException {
 
-        // variable name of wiidget
-        String wiidgetVariable = null;
+		// variable name of wiidget
+		String wiidgetVariable = null;
 
-        final WiidgetVariableBindingContext wiidgetVariableBindingContext = declarationContext.wiidgetVariableBinding();
-        if (null != wiidgetVariableBindingContext) {
-            wiidgetVariable = wiidgetVariableBindingContext.wiidgetVariable().Identifier().getText();
-        }
+		final WiidgetVariableBindingContext wiidgetVariableBindingContext = declarationContext.wiidgetVariableBinding();
+		if (null != wiidgetVariableBindingContext) {
+			wiidgetVariable = wiidgetVariableBindingContext.wiidgetVariable().Identifier().getText();
+		}
 
-        Wiidget wiidget;
+		Wiidget wiidget;
 
-        final UnifiedWiidgetNameContext wiidgetNameContext = declarationContext.unifiedWiidgetName();
-        final TerminalNode stringWiidgetName = wiidgetNameContext.StringLiteral();
-        final WiidgetArgumentsContext wiidgetArguments = declarationContext.wiidgetArguments();
+		final UnifiedWiidgetNameContext wiidgetNameContext = declarationContext.unifiedWiidgetName();
+		final TerminalNode stringWiidgetName = wiidgetNameContext.StringLiteral();
+		final WiidgetArgumentsContext wiidgetArguments = declarationContext.wiidgetArguments();
 
-        if (null == stringWiidgetName) {
+		if (null == stringWiidgetName) {
 
-            final ExpressionWiidgetNameContext expressionWiidgetName = wiidgetNameContext.expressionWiidgetName();
-            if (null == expressionWiidgetName) {
+			final ExpressionWiidgetNameContext expressionWiidgetName = wiidgetNameContext.expressionWiidgetName();
+			if (null == expressionWiidgetName) {
 
-                final String alias = wiidgetNameContext.Identifier().getText();
-                final WiidgetResource wiidgetResource = getWiidgetClass(alias);
+				final String alias = wiidgetNameContext.Identifier().getText();
+				final WiidgetResource wiidgetResource = getWiidgetClass(alias);
 
-                if (null == wiidgetResource) {
-                    throw new WiidgetParserException("Unknown wiidget alias: " + alias);
-                }
+				if (null == wiidgetResource) {
+					throw new WiidgetParserException("Unknown wiidget alias: " + alias);
+				}
 
-                wiidget = createWiidget(wiidgetResource, wiidgetArguments);
-            } else {
+				wiidget = createWiidget(wiidgetResource, wiidgetArguments);
+			} else {
 
-                wiidget = createWiidgetFromExpression(expressionWiidgetName.expression(), wiidgetArguments);
+				wiidget = createWiidgetFromExpression(expressionWiidgetName.expression(), wiidgetArguments);
 
-            }
+			}
 
-        } else {
+		} else {
 
-            final String tagName = new StringDeclaration(stringWiidgetName).getContent();
-            wiidget = createRawWiidget(tagName, wiidgetArguments);
+			final String tagName = new StringDeclaration(stringWiidgetName).getContent();
+			wiidget = createRawWiidget(tagName, wiidgetArguments);
 
-        }
+		}
 
-        wiidget = startWiidget(wiidget); // after start wiidget can be null when its not rendered
+		wiidget = startWiidget(wiidget); // after start wiidget can be null when its not rendered
 
-        // bind to variable
-        if (null != wiidgetVariable) {
-            getWiidgetMap().put(wiidgetVariable, wiidget);
-        }
+		// bind to variable
+		if (null != wiidgetVariable) {
+			getWiidgetMap().put(wiidgetVariable, wiidget);
+		}
 
-        // rendered property has meaning here
-        if (null != wiidget) {
-            processStatements(declarationContext.wiidgetBody().statementDeclaration());
-        }
+		// rendered property has meaning here
+		if (null != wiidget) {
+			processStatements(declarationContext.wiidgetBody().statementDeclaration());
+		}
 
-        endWiidget(wiidget);
+		endWiidget(wiidget);
 
-    }
+	}
 
-    private Wiidget createWiidgetFromExpression(final ExpressionContext expression, final WiidgetArgumentsContext wiidgetArguments) throws WiidgetParserException {
+	private Wiidget createWiidgetFromExpression(final ExpressionContext expression, final WiidgetArgumentsContext wiidgetArguments) throws WiidgetParserException {
 
-        final Object value = evaluateExpression(expression);
-        if (value instanceof Wiidget) {
-            return (Wiidget) value;
+		final Object value = evaluateExpression(expression);
+		if (value instanceof Wiidget) {
+			return (Wiidget) value;
 
-        } else if (value instanceof String) {
-            return createRawWiidget((String) value, wiidgetArguments);
-        } else if (value instanceof Class) {
+		} else if (value instanceof String) {
+			return createRawWiidget((String) value, wiidgetArguments);
+		} else if (value instanceof Class) {
 
-            if (Wiidget.class.isAssignableFrom((Class<?>) value)) {
+			if (Wiidget.class.isAssignableFrom((Class<?>) value)) {
 
-                @SuppressWarnings("unchecked")
-                final Class<? extends Wiidget> type = (Class<? extends Wiidget>) value;
-                final DataMap dataMap = processArguments(wiidgetArguments, type);
+				@SuppressWarnings("unchecked")
+				final Class<? extends Wiidget> type = (Class<? extends Wiidget>) value;
+				final DataMap dataMap = processArguments(wiidgetArguments, type);
 
-                final Wiidget wiidget = getWiidgetFactory().createWiidget(this, type, dataMap, true);
+				final Wiidget wiidget = getWiidgetFactory().createWiidget(this, type, dataMap, true);
 
-                return wiidget;
+				return wiidget;
 
-            }
+			}
 
-        }
+		}
 
-        throw new WiidgetParserException(String.format("Unsupported wiidget name expression: %s", value));
-    }
+		throw new WiidgetParserException(String.format("Unsupported wiidget name expression: %s", value));
+	}
 
-    private Wiidget createRawWiidget(final String tagName, final WiidgetArgumentsContext wiidgetArguments) throws WiidgetParserException {
+	private Wiidget createRawWiidget(final String tagName, final WiidgetArgumentsContext wiidgetArguments) throws WiidgetParserException {
 
-        final Class<? extends Wiidget> rawType = getRawType();
+		final Class<? extends Wiidget> rawType = getRawType();
 
-        final DataMap dataMap = processArguments(wiidgetArguments, rawType);
-        dataMap.put("rawTagName", tagName); // TODO interface for rawtype
-        final Wiidget wiidget = getWiidgetFactory().createWiidget(this, rawType, dataMap, true);
+		final DataMap dataMap = processArguments(wiidgetArguments, rawType);
+		dataMap.put("rawTagName", tagName); // TODO interface for rawtype
+		final Wiidget wiidget = getWiidgetFactory().createWiidget(this, rawType, dataMap, true);
 
-        return wiidget;
-    }
+		return wiidget;
+	}
 
-    private Class<? extends Wiidget> getRawType() {
-        return getWiidgetFactory().getConfiguration().getRawType();
-    }
+	private Class<? extends Wiidget> getRawType() {
+		return getWiidgetFactory().getConfiguration().getRawType();
+	}
 
-    private Wiidget createWiidget(final WiidgetResource wiidgetResource, final WiidgetArgumentsContext arguments) throws WiidgetParserException {
-        Wiidget wiidget;
-        if (wiidgetResource instanceof FileWiidgetResource) {
+	private Wiidget createWiidget(final WiidgetResource wiidgetResource, final WiidgetArgumentsContext arguments) throws WiidgetParserException {
+		Wiidget wiidget;
+		if (wiidgetResource instanceof FileWiidgetResource) {
 
-            final FileWiidgetResource fileWiidgetResource = (FileWiidgetResource) wiidgetResource;
+			final FileWiidgetResource fileWiidgetResource = (FileWiidgetResource) wiidgetResource;
 
-            final String fileName = getRealFilename(fileWiidgetResource.getCanonicalFileName());
-            final ResourceWiidget resourceWiidget = getWiidgetFactory().createWiidget(getOwner(), ResourceWiidget.class, EMPTY_DATA, true);
-            resourceWiidget.setFileName(fileName);
+			final String fileName = getRealFilename(fileWiidgetResource.getCanonicalFileName());
+			final ResourceWiidget resourceWiidget = getWiidgetFactory().createWiidget(getOwner(), ResourceWiidget.class, EMPTY_DATA, true);
+			resourceWiidget.setFileName(fileName);
 
-            wiidget = resourceWiidget;
+			wiidget = resourceWiidget;
 
-        } else if (wiidgetResource instanceof ClassWiidgetResource) {
+		} else if (wiidgetResource instanceof ClassWiidgetResource) {
 
-            final Class<? extends Wiidget> type = ((ClassWiidgetResource) wiidgetResource).getWiidgetClass();
-            final DataMap dataMap = processArguments(arguments, type);
+			final Class<? extends Wiidget> type = ((ClassWiidgetResource) wiidgetResource).getWiidgetClass();
+			final DataMap dataMap = processArguments(arguments, type);
 
-            wiidget = getWiidgetFactory().createWiidget(this, type, dataMap, true);
+			wiidget = getWiidgetFactory().createWiidget(this, type, dataMap, true);
 
-        } else if (wiidgetResource instanceof ExternalWiidgetResource) {
+		} else if (wiidgetResource instanceof ExternalWiidgetResource) {
 
-            wiidget = createExternalWiidget((ExternalWiidgetResource) wiidgetResource, arguments);
+			wiidget = createExternalWiidget((ExternalWiidgetResource) wiidgetResource, arguments);
 
-        } else {
-            throw new IllegalStateException("Illegal import elemenet: " + wiidgetResource);
-        }
+		} else {
+			throw new IllegalStateException("Illegal import elemenet: " + wiidgetResource);
+		}
 
-        return wiidget;
-    }
+		return wiidget;
+	}
 
-    private Wiidget createExternalWiidget(final ExternalWiidgetResource wiidgetResource, final WiidgetArgumentsContext arguments) {
+	private Wiidget createExternalWiidget(final ExternalWiidgetResource wiidgetResource, final WiidgetArgumentsContext arguments) throws WiidgetParserException {
 
-        return null;
-    }
+		final URI uri = wiidgetResource.getUri();
 
-    private String getRealFilename(final String canonicalFileName) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+		try {
 
-    private WiidgetResource getWiidgetClass(final String wiidgetName) throws WiidgetParserException {
-        return importContext.findByAlias(wiidgetName);
-    }
+			final InputStream stream = uri.toURL().openStream();
+			final String content = IOUtils.toString(stream);
+			final DataMap data = processArguments(arguments, null);
 
-    private DataMap processArguments(final WiidgetArgumentsContext wiidgetArguments, final Class<? extends Wiidget> wiidgetClass) throws WiidgetParserException {
+			return getWiidgetFactory().createWiidget(this, WiidgetLangCompiler.class, data().set("value", content).set("context", data), true);
 
-        final DataMap dataMap = new DataMap();
+		} catch (final IOException e) {
+			throw new WiidgetException("Cannot load external wiidget: " + uri.toString(), e);
+		}
 
-        if (null == wiidgetArguments) {
-            return dataMap;
-        }
+	}
 
-        final ElementValueContext elementValueContext = wiidgetArguments.elementValue();
+	private String getRealFilename(final String canonicalFileName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-        if (null == elementValueContext) {
+	private WiidgetResource getWiidgetClass(final String wiidgetName) throws WiidgetParserException {
+		return importContext.findByAlias(wiidgetName);
+	}
 
-            final ElementValuePairsContext elementValuePairsContext = wiidgetArguments.elementValuePairs();
-            if (null != elementValuePairsContext) {
-                final List<ElementValuePairContext> valuePairContext = elementValuePairsContext.elementValuePair();
+	private DataMap processArguments(final WiidgetArgumentsContext wiidgetArguments, final Class<? extends Wiidget> wiidgetClass) throws WiidgetParserException {
 
-                if (valuePairContext != null) {
-                    for (final ElementValuePairContext elementValuePairContext : valuePairContext) {
+		final DataMap dataMap = new DataMap();
 
-                        final String property = elementValuePairContext.Identifier().getText();
+		if (null == wiidgetArguments) {
+			return dataMap;
+		}
 
-                        final ElementValueContext elementValue = elementValuePairContext.elementValue();
-                        final Object value = processArgumentValue(elementValue);
+		final ElementValueContext elementValueContext = wiidgetArguments.elementValue();
 
-                        dataMap.put(property, value);
-                    }
-                }
-            }
+		if (null == elementValueContext) {
 
-        } else {
+			final ElementValuePairsContext elementValuePairsContext = wiidgetArguments.elementValuePairs();
+			if (null != elementValuePairsContext) {
+				final List<ElementValuePairContext> valuePairContext = elementValuePairsContext.elementValuePair();
 
-            final Object value = processArgumentValue(elementValueContext);
+				if (valuePairContext != null) {
+					for (final ElementValuePairContext elementValuePairContext : valuePairContext) {
 
-            if (null == wiidgetClass) {
-                dataMap.put("id", value); // id is the default attribute
-            } else {
-                final String property = getDefaultValueProperty(wiidgetClass);
-                dataMap.put(property, value);
-            }
+						final String property = elementValuePairContext.Identifier().getText();
 
-        }
+						final ElementValueContext elementValue = elementValuePairContext.elementValue();
+						final Object value = processArgumentValue(elementValue);
 
-        return dataMap;
+						dataMap.put(property, value);
+					}
+				}
+			}
 
-    }
+		} else {
 
-    private String getDefaultValueProperty(final Class<? extends Wiidget> wiidgetClass) {
+			final Object value = processArgumentValue(elementValueContext);
 
-        final Field defaultField = Reflection.getField(wiidgetClass, DefaultField.class);
+			if (null == wiidgetClass) {
+				dataMap.put("id", value); // id is the default attribute
+			} else {
+				final String property = getDefaultValueProperty(wiidgetClass);
+				dataMap.put(property, value);
+			}
 
-        if (null == defaultField) {
-            return "value";
-        } else {
-            return defaultField.getName();
-        }
+		}
 
-    }
+		return dataMap;
 
-    private Object processArgumentValue(final ElementValueContext valueContext) throws WiidgetParserException {
+	}
 
-        final QualifiedNameContext qualifiedNameContext = valueContext.qualifiedName();
-        if (null != qualifiedNameContext) {
-            return processQualifiedName(qualifiedNameContext);
-        }
+	private String getDefaultValueProperty(final Class<? extends Wiidget> wiidgetClass) {
 
-        final ElementValueArrayInitializerContext arrayInitializerContext = valueContext.elementValueArrayInitializer();
-        if (null != arrayInitializerContext) {
-            return processValueArray(arrayInitializerContext);
-        }
+		final Field defaultField = Reflection.getField(wiidgetClass, DefaultField.class);
 
-        final ExpressionContext expressionContext = valueContext.expression();
-        if (null != expressionContext) {
-            return evaluateExpression(expressionContext);
-        }
-        throw new WiidgetParserException("Cannot get value of : " + valueContext.getText());
+		if (null == defaultField) {
+			return "value";
+		} else {
+			return defaultField.getName();
+		}
 
-    }
+	}
 
-    /**
-     * Element value array evaluator.
-     *
-     * @param arrayInitializerContext
-     *            context
-     * @return array of evaluated values
-     * @throws WiidgetParserException
-     */
-    private Object[] processValueArray(final ElementValueArrayInitializerContext arrayInitializerContext) throws WiidgetParserException {
+	private Object processArgumentValue(final ElementValueContext valueContext) throws WiidgetParserException {
 
-        final List<ElementValueContext> elementValueContexts = arrayInitializerContext.elementValue();
-        final int size = elementValueContexts.size();
-        final Object[] dataArray = new Object[size];
+		final QualifiedNameContext qualifiedNameContext = valueContext.qualifiedName();
+		if (null != qualifiedNameContext) {
+			return processQualifiedName(qualifiedNameContext);
+		}
 
-        for (int index = 0; index < elementValueContexts.size(); index++) {
+		final ElementValueArrayInitializerContext arrayInitializerContext = valueContext.elementValueArrayInitializer();
+		if (null != arrayInitializerContext) {
+			return processValueArray(arrayInitializerContext);
+		}
 
-            dataArray[index] = processArgumentValue(elementValueContexts.get(index));
+		final ExpressionContext expressionContext = valueContext.expression();
+		if (null != expressionContext) {
+			return evaluateExpression(expressionContext);
+		}
+		throw new WiidgetParserException("Cannot get value of : " + valueContext.getText());
 
-        }
+	}
 
-        return dataArray;
-    }
+	/**
+	 * Element value array evaluator.
+	 *
+	 * @param arrayInitializerContext
+	 *            context
+	 * @return array of evaluated values
+	 * @throws WiidgetParserException
+	 */
+	private Object[] processValueArray(final ElementValueArrayInitializerContext arrayInitializerContext) throws WiidgetParserException {
 
-    private Object processQualifiedName(final QualifiedNameContext qualifiedNameContext) throws WiidgetParserException {
-        final Iterator<TerminalNode> iterator = qualifiedNameContext.Identifier().iterator();
+		final List<ElementValueContext> elementValueContexts = arrayInitializerContext.elementValue();
+		final int size = elementValueContexts.size();
+		final Object[] dataArray = new Object[size];
 
-        final TerminalNode baseNode = iterator.next();
+		for (int index = 0; index < elementValueContexts.size(); index++) {
 
-        Object baseObject = getWiidgetContext().get(baseNode.getText());
+			dataArray[index] = processArgumentValue(elementValueContexts.get(index));
 
-        while (iterator.hasNext()) {
-            final TerminalNode terminalNode = iterator.next();
-            final String property = terminalNode.getText();
+		}
 
-            baseObject = Reflection.getFieldValue(baseObject, property);
+		return dataArray;
+	}
 
-        }
+	private Object processQualifiedName(final QualifiedNameContext qualifiedNameContext) throws WiidgetParserException {
+		final Iterator<TerminalNode> iterator = qualifiedNameContext.Identifier().iterator();
 
-        return baseObject;
+		final TerminalNode baseNode = iterator.next();
 
-    }
+		Object baseObject = getWiidgetContext().get(baseNode.getText());
 
-    /**
-     * Evaluates expression value.
-     *
-     * @param expression
-     *            the expression descriptor
-     * @return value of expression
-     * @throws EvaluationException
-     *             when expression is illegal or cannot evaluate
-     */
-    private Object evaluateExpression(final ExpressionContext expression) throws EvaluationException {
+		while (iterator.hasNext()) {
+			final TerminalNode terminalNode = iterator.next();
+			final String property = terminalNode.getText();
 
-        final ExpressionEvaluator evaluator = createExpressionEvaluator();
+			baseObject = Reflection.getFieldValue(baseObject, property);
 
-        return evaluator.evaluate(expression);
-    }
+		}
 
-    protected ExpressionEvaluator createExpressionEvaluator() {
-        Configuration configuration = getWiidgetFactory().getConfiguration();
-        return configuration.getExpressionEvaluatorFactory(getWiidgetContext(), getWiidgetMap()).create();
-    }
+		return baseObject;
 
-    public static CompilationUnitContext getCompilationUnitContext(final InputStream inputStream) throws WiidgetParserException {
-        try {
-            final ANTLRInputStream input = new ANTLRInputStream(inputStream);
-            return getCompilationUnitContext(input);
+	}
 
-        } catch (final IOException exception) {
-            throw new WiidgetParserException("Cannot parse input.", exception);
-        }
-    }
+	/**
+	 * Evaluates expression value.
+	 *
+	 * @param expression
+	 *            the expression descriptor
+	 * @return value of expression
+	 * @throws EvaluationException
+	 *             when expression is illegal or cannot evaluate
+	 */
+	private Object evaluateExpression(final ExpressionContext expression) throws EvaluationException {
 
-    public static CompilationUnitContext getCompilationUnitContext(final String template) {
-        final ANTLRInputStream input = new ANTLRInputStream(template);
+		final ExpressionEvaluator evaluator = createExpressionEvaluator();
 
-        return getCompilationUnitContext(input);
-    }
+		return evaluator.evaluate(expression);
+	}
 
-    /**
-     * Returns the compilation context of input.
-     *
-     * @param antlrInputStream
-     *            ANTLR input
-     * @return the parsed context
-     */
-    private static CompilationUnitContext getCompilationUnitContext(final ANTLRInputStream antlrInputStream) {
+	protected ExpressionEvaluator createExpressionEvaluator() {
+		final Configuration configuration = getWiidgetFactory().getConfiguration();
+		return configuration.getExpressionEvaluatorFactory(getWiidgetContext(), getWiidgetMap()).create();
+	}
 
-        final WiidgetLexer aWiidgetLexer = new WiidgetLexer(antlrInputStream);
-        final BufferedTokenStream tokenStream = new BufferedTokenStream(aWiidgetLexer);
-        final WiidgetParser aWiidgetParser = new CustomWiidgetParser(tokenStream);
-        final CompilationUnitContext compilationUnit = aWiidgetParser.compilationUnit();
+	public static CompilationUnitContext getCompilationUnitContext(final InputStream inputStream) throws WiidgetParserException {
+		try {
+			final ANTLRInputStream input = new ANTLRInputStream(inputStream);
+			return getCompilationUnitContext(input);
 
-        return compilationUnit;
-    }
+		} catch (final IOException exception) {
+			throw new WiidgetParserException("Cannot parse input.", exception);
+		}
+	}
 
-    /**
-     * @return the wiidgetMap
-     */
-    public Map<String, Wiidget> getWiidgetMap() {
-        return wiidgetMap;
-    }
+	public static CompilationUnitContext getCompilationUnitContext(final String template) {
+		final ANTLRInputStream input = new ANTLRInputStream(template);
+
+		return getCompilationUnitContext(input);
+	}
+
+	/**
+	 * Returns the compilation context of input.
+	 *
+	 * @param antlrInputStream
+	 *            ANTLR input
+	 * @return the parsed context
+	 */
+	private static CompilationUnitContext getCompilationUnitContext(final ANTLRInputStream antlrInputStream) {
+
+		final WiidgetLexer aWiidgetLexer = new WiidgetLexer(antlrInputStream);
+		final BufferedTokenStream tokenStream = new BufferedTokenStream(aWiidgetLexer);
+		final WiidgetParser aWiidgetParser = new CustomWiidgetParser(tokenStream);
+		final CompilationUnitContext compilationUnit = aWiidgetParser.compilationUnit();
+
+		return compilationUnit;
+	}
+
+	/**
+	 * @return the wiidgetMap
+	 */
+	public Map<String, Wiidget> getWiidgetMap() {
+		return wiidgetMap;
+	}
 }
