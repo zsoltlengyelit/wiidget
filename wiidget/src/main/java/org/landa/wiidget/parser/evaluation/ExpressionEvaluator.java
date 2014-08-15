@@ -96,7 +96,6 @@ public class ExpressionEvaluator {
 
                         return MethodUtils.getAccessibleMethod(listValue.getClass(), index.toString());
                     }
-
                     //  throw new EvaluationException(String.format("Illegal index: %s on list: %s", index, listValue), numberFormatException);
                 }
 
