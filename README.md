@@ -1,3 +1,5 @@
+![Travis build][https://api.travis-ci.org/zsoltlengyelit/wiidget.png]
+
 wiidget
 =======
 
