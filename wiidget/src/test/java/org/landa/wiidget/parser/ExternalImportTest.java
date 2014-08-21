@@ -7,6 +7,8 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +33,8 @@ import org.landa.wiidget.util.DataMap;
  */
 public class ExternalImportTest {
 
+    private static final Logger LOGGER = Logger.getLogger(ExternalImportTest.class.getSimpleName());
+
     private static final int PORT = 7249;
     static Server server;
     static DataMap content;
@@ -42,10 +46,11 @@ public class ExternalImportTest {
         // TODO support CI environment
         org.landa.wiidget.testutil.Assume.assumeNonCiServer();
 
-        final Server server = new Server(PORT);
+        server = new Server(PORT);
         server.setHandler(new ContentServer());
         server.start();
-        //server.join();
+
+        LOGGER.log(Level.INFO, "External wiidget server started");
 
     }
 
@@ -59,9 +64,10 @@ public class ExternalImportTest {
     @AfterClass
     public static void stopServer() throws Exception {
         if (null != server) {
+
             server.stop();
             server.destroy();
-
+            LOGGER.log(Level.INFO, "External wiidget server stopped");
         }
     }
 
@@ -149,7 +155,7 @@ public class ExternalImportTest {
 
         @Override
         public void handle(final String target, final Request baseRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException,
-                ServletException {
+        ServletException {
 
             response.setContentType("application/wiidget;charset=utf-8");
             response.setStatus(HttpServletResponse.SC_OK);
