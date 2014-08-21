@@ -3,4 +3,5 @@ jdk:
   - oraclejdk7
 before_script:
   cd wiidget
+env: CONTINUOUS_INTEGRATION=true
   
