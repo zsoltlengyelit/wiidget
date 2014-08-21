@@ -21,7 +21,11 @@ public class Assume {
      * @return true when the environment is a continuous server
      */
     public static boolean isCiServer() {
-        return Boolean.parseBoolean(System.getProperty(CONTINUOUS_INTEGRATION_EVN_VAR));
+        final String ciProperty = System.getProperty(CONTINUOUS_INTEGRATION_EVN_VAR);
+
+        System.out.println(String.format("CI server property: %s = %s ", CONTINUOUS_INTEGRATION_EVN_VAR, ciProperty));
+
+        return Boolean.parseBoolean(ciProperty);
     }
 
 }
