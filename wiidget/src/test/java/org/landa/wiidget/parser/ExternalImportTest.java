@@ -2,6 +2,9 @@ package org.landa.wiidget.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +20,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.landa.wiidget.Renderer;
 import org.landa.wiidget.util.DataMap;
@@ -29,138 +31,144 @@ import org.landa.wiidget.util.DataMap;
  */
 public class ExternalImportTest {
 
-	private static final int PORT = 7249;
-	static Server server;
-	static DataMap content;
-	static Map<String, String> files;
+    private static final int PORT = 7249;
+    static Server server;
+    static DataMap content;
+    static Map<String, String> files;
 
-	@BeforeClass
-	public static void initServer() throws Exception {
+    @BeforeClass
+    public static void initServer() throws Exception {
+        // run only in locale
+        // TODO support CI environment
+        org.landa.wiidget.testutil.Assume.assumeNonCiServer();
 
-		final Server server = new Server(PORT);
-		server.setHandler(new ContentServer());
-		server.start();
-		//server.join();
+        final Server server = new Server(PORT);
+        server.setHandler(new ContentServer());
+        server.start();
+        //server.join();
 
-	}
+    }
 
-	@Before
-	public void init() {
-		content = new DataMap();
-		files = new HashMap<String, String>();
+    @Before
+    public void init() {
+        content = new DataMap();
+        files = new HashMap<String, String>();
 
-	}
+    }
 
-	@AfterClass
-	public static void stopServer() throws Exception {
-		if (null != server) {
-			server.stop();
-			server.destroy();
+    @AfterClass
+    public static void stopServer() throws Exception {
+        if (null != server) {
+            server.stop();
+            server.destroy();
 
-		}
-	}
+        }
+    }
 
-	@Test
-	public void testExternalLoading() {
+    @Test
+    public void testExternalLoading() {
 
-		final String path = "simpleOut";
-		files.put(path, "/externalWiidgets/simpleOut.wdgt");
+        final String path = "simpleOut";
+        files.put(path, "/externalWiidgets/simpleOut.wdgt");
 
-		final String externalUrl = getExternalUrl(path);
+        final String externalUrl = getExternalUrl(path);
 
-		final StringBuilder builder = new StringBuilder();
-		builder.append("import \"");
-		builder.append(externalUrl);
-		builder.append("\" as external;\n");
-		builder.append(" external;	");
+        final StringBuilder builder = new StringBuilder();
+        builder.append("import \"");
+        builder.append(externalUrl);
+        builder.append("\" as external;\n");
+        builder.append(" external;	");
 
-		final String rendered = Renderer.create().render(builder.toString());
+        final String rendered = Renderer.create().render(builder.toString());
 
-		final String expected = "Hello external wiidget";
-		Assert.assertEquals(expected, rendered);
-	}
+        final String expected = "Hello external wiidget";
+        Assert.assertEquals(expected, rendered);
+    }
 
-	@Test
-	public void testPassParameter() {
+    @Test
+    public void testPassParameter() {
 
-		final String path = "varOut";
-		files.put(path, "/externalWiidgets/varOut.wdgt");
+        final String path = "varOut";
+        files.put(path, "/externalWiidgets/varOut.wdgt");
 
-		final String externalUrl = getExternalUrl(path);
+        final String externalUrl = getExternalUrl(path);
 
-		final StringBuilder builder = new StringBuilder();
-		builder.append("import \"");
-		builder.append(externalUrl);
-		builder.append("\" as external;\n");
-		builder.append(" external(passedVariable = \"Must print\");	");
+        final StringBuilder builder = new StringBuilder();
+        builder.append("import \"");
+        builder.append(externalUrl);
+        builder.append("\" as external;\n");
+        builder.append(" external(passedVariable = \"Must print\");	");
 
-		final String rendered = Renderer.create().render(builder.toString());
+        final String rendered = Renderer.create().render(builder.toString());
 
-		final String expected = "Must print";
-		Assert.assertEquals(expected, rendered);
-	}
+        final String expected = "Must print";
+        Assert.assertEquals(expected, rendered);
+    }
 
-	@Test
-	public void testResourceFile() {
+    @Test
+    public void testResourceFile() {
 
-		final StringBuilder builder = new StringBuilder();
-		builder.append("import \"");
-		builder.append("resource:///externalWiidgets/varOut.wdgt");
-		builder.append("\" as localfile;\n");
-		builder.append(" localfile(passedVariable = \"Must print\");	");
+        final StringBuilder builder = new StringBuilder();
+        builder.append("import \"");
+        builder.append("resource:///externalWiidgets/varOut.wdgt");
+        builder.append("\" as localfile;\n");
+        builder.append(" localfile(passedVariable = \"Must print\");	");
 
-		final String rendered = Renderer.create().render(builder.toString());
+        final String rendered = Renderer.create().render(builder.toString());
 
-		final String expected = "Must print";
-		Assert.assertEquals(expected, rendered);
-	}
+        final String expected = "Must print";
+        Assert.assertEquals(expected, rendered);
+    }
 
-	@Test
-	@Ignore("Cannot test this everywhere")
-	public void testLocalFile() {
+    @Test
+    public void testLocalFile() throws URISyntaxException {
 
-		final StringBuilder builder = new StringBuilder();
-		builder.append("import \"");
-		builder.append("file://C:/Users/Zsolti/Documents/GitHub/wiidget/wiidget/src/test/resource/externalWiidgets/varOut.wdgt");
-		builder.append("\" as localfile;\n");
-		builder.append(" localfile(passedVariable = \"Must print\");	");
+        final URL resource = getClass().getResource("/externalWiidgets/varOut.wdgt");
+        String absolutePath = Paths.get(resource.toURI()).toFile().getAbsolutePath();
+        absolutePath = absolutePath.replaceAll("\\\\", "/");
 
-		final String rendered = Renderer.create().render(builder.toString());
+        final StringBuilder builder = new StringBuilder();
+        builder.append("import \"file://");
+        builder.append(absolutePath);
+        builder.append("\" as localfile;\n");
+        builder.append(" localfile(passedVariable = \"Must print\");	");
 
-		final String expected = "Must print";
-		Assert.assertEquals(expected, rendered);
+        final String rendered = Renderer.create().render(builder.toString());
 
-	}
+        final String expected = "Must print";
+        Assert.assertEquals(expected, rendered);
 
-	private String getExternalUrl(final String path) {
-		return "http://localhost:" + PORT + "/" + path;
-	}
+    }
 
-	// to serve wiidget files
-	public static class ContentServer extends AbstractHandler {
+    private String getExternalUrl(final String path) {
+        return "http://localhost:" + PORT + "/" + path;
+    }
 
-		@Override
-		public void handle(final String target, final Request baseRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException,
-		        ServletException {
+    // to serve wiidget files
+    public static class ContentServer extends AbstractHandler {
 
-			response.setContentType("application/wiidget;charset=utf-8");
-			response.setStatus(HttpServletResponse.SC_OK);
-			baseRequest.setHandled(true);
+        @Override
+        public void handle(final String target, final Request baseRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException,
+                ServletException {
 
-			final String resourceName = target.substring(1);
+            response.setContentType("application/wiidget;charset=utf-8");
+            response.setStatus(HttpServletResponse.SC_OK);
+            baseRequest.setHandled(true);
 
-			if (files.containsKey(resourceName)) {
+            final String resourceName = target.substring(1);
 
-				final String fileName = files.get(resourceName);
+            if (files.containsKey(resourceName)) {
 
-				final InputStream resourceAsStream = getClass().getResourceAsStream(fileName);
-				final String content = IOUtils.toString(resourceAsStream);
-				response.getWriter().print(content);
+                final String fileName = files.get(resourceName);
 
-			} else {
-				final Object object = content.get(resourceName);
-				response.getWriter().print(object);
-			}
-		}
-	}
+                final InputStream resourceAsStream = getClass().getResourceAsStream(fileName);
+                final String content = IOUtils.toString(resourceAsStream);
+                response.getWriter().print(content);
+
+            } else {
+                final Object object = content.get(resourceName);
+                response.getWriter().print(object);
+            }
+        }
+    }
 }
