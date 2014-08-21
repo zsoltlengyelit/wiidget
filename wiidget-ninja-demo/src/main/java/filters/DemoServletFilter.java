@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package filters;
 
@@ -29,26 +29,20 @@ import javax.servlet.ServletResponse;
 
 /**
  * @author zoza
- * 
+ *
  */
 public class DemoServletFilter implements javax.servlet.Filter {
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(final FilterConfig filterConfig) throws ServletException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void doFilter(ServletRequest request,
-                         ServletResponse response,
-                         FilterChain chain) throws IOException,
-            ServletException {
-       
-        long startTime = System.currentTimeMillis();
+    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
+
         chain.doFilter(request, response);
-        long endTime = System.currentTimeMillis();
-        System.out.println("log from DemoServletFilter. request time is: "+(endTime-startTime)+" millis.");
     }
 
     @Override
